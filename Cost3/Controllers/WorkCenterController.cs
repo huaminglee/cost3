@@ -212,17 +212,17 @@ namespace Cost.Controllers
         [AllowAnonymous]
         public ActionResult QuickSearchWorkCenterName(string term)
         {
-            //var q =
-            //     db.WorkCenter.Where(p => p.WorkCenterName.Contains(term))
-            //    .Take(10)
-            //    .Select(r => new { label = r.WorkCenterName });
-            var q = db.WorkCenter.Where(w => w.WorkCenterCode.Contains(term))
-              .Take(10)
-              .Select(w => new
-              {
-                  value = w.WorkCenterName,
-                  label = w.WorkCenterCode+" "+w.WorkCenterName
-              });
+            var q =
+                 db.WorkCenter.Where(p => p.WorkCenterName.Contains(term))
+                .Take(10)
+                .Select(r => new { label = r.WorkCenterName });
+            //var q = db.WorkCenter.Where(w => w.WorkCenterCode.Contains(term))
+            //  .Take(10)
+            //  .Select(w => new
+            //  {
+            //      value = w.WorkCenterName,
+            //      label = w.WorkCenterCode+" "+w.WorkCenterName
+            //  });
 
             return Json(q, JsonRequestBehavior.AllowGet);
         }
