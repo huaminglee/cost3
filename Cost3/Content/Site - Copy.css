@@ -1,0 +1,118 @@
+﻿/*页脚保持在最下方*/
+html, body { margin: 0; padding: 0; height: 100%; background-color: #fbf7f7; }
+#container { min-height: 100%; position: relative; width: 75%; margin: auto; /*border: 1px solid #808080;*/ }
+#header { height: 50px;font-size:2em; /*padding:10px;*/ }
+#body { padding: 10px; padding-bottom: 60px; /*与footer的高度一致*/ }
+#footer { 
+position: absolute;_position:relative; bottom: 0; width: 100%; height: 60px; /*与content的高度一致*/ background: #6293BB; text-align:center;
+border-top-left-radius:5px;
+border-top-right-radius:5px;
+border:1px solid #E0F0FC;
+}
+
+/*#region 导航菜单*/
+#nav{
+/*border:1px solid gray;*/background-color:#E0F0FD;
+height:36px;
+*height:35px;/*IE6 7*/
+height:34px\9;/*IE9*/
+border:1px solid gray;
+}
+ @media screen and (-webkit-min-device-pixel-ratio:0){ #nav {height:35px;} }
+
+#nav, #nav ul {
+margin:-2px 0 0 0!important;/*chrome 2级菜单与1级菜单的间距*/
+*margin:-2px 0 0 0 !important ;/*IE7,IE6*/
+padding:0; list-style-type:none; list-style-position:outside; position:relative;z-index:100; 
+
+}
+
+#nav a:link, #nav a:active, #nav a:visited { 
+    display: block; padding: 0.5em 20px; font-weight: bold; font-size: 1em; 
+    border-right: 1px solid #000; border-bottom: 1px solid #000; color: #000;border-left:1px solid #000 ;
+    text-decoration: none; background-color:#E0F0FD; 
+
+}
+#nav a:hover { background-color: #FCDE61; color: #000;}
+#nav li { float: left; position: relative;}
+#nav ul { position: absolute; width: 14em; top: 2.3em; display: none; }
+#nav li ul a { width: 14em; float: left;}
+#nav ul ul { top: auto; }  
+#nav li ul ul { left: 14em; margin: 0 0 0 10px; }
+#nav li:hover ul, #nav li.ie6hover ul { display:none; }
+#nav li:hover ul, #nav li li:hover ul ,#nav li.ie6hover ul, #nav li li.ie6hover ul { display:block;}
+/*#endregion*/
+
+/*#region 导航菜单*/
+/*body { background: #EDE8E2; margin: 15px; }*/
+#menu { font-family: Arial; font-size: 14px; width: 100%; overflow: hidden; }
+    #menu, #menu ul { list-style-type: none; background: #6293BB /*#A3C159*/; margin: 0; padding: 0; z-index: 100; }
+        #menu li { float: left; }
+            #menu li a { display: block; padding: 10px 15px; color: #FFF; text-decoration: none; border-right: 1px solid #FFF; }
+                #menu li a:hover { background: #1BA6B2; }
+            #menu li ul li { float: none; }
+                #menu li ul li a { border-top: 1px solid #FFF; }
+            #menu li ul { display: none; position: absolute; }
+            #menu li:hover ul { display: block; }
+/*#endregion*/
+
+/*#region 搜索区域*/
+#searchForm { padding: 5px; }
+/*#endregion*/
+/*#region jqGrid字体大小*/
+.ui-jqgrid .ui-jqgrid-title { font-size: 1.2em; }/*修改grid标题的字体大小*/
+.ui-jqgrid-sortable { font-size: 1.2em; }/*修改列名的字体大小*/
+.ui-jqgrid tr.jqgrow td { font-size: 1.2em; }/*修改表格内容字体*/
+.ui-jqgrid .ui-jqgrid-pager { font-size: 12px !important; }/*翻页导航栏*/
+.ui-jqdialog{font-size:12px !important;}/*弹出form字体大小*/
+/*#endregion*/
+
+/* Styles for basic forms
+-----------------------------------------------------------*/
+fieldset {
+    border: 1px solid #ddd;
+    padding: 0 1.4em 1.4em 1.4em;
+    margin: 0 0 1.5em 0;
+}
+
+legend {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+textarea {
+    min-height: 75px;
+}
+
+.editor-label {
+    margin: 1em 0 0 0;
+}
+
+.editor-field {
+    margin: 0.5em 0 0 0;
+}
+
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error {
+    color: #f00;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+.input-validation-error {
+    border: 1px solid #f00;
+    background-color: #fee;
+}
+
+.validation-summary-errors {
+    font-weight: bold;
+    color: #f00;
+}
+
+.validation-summary-valid {
+    display: none;
+}

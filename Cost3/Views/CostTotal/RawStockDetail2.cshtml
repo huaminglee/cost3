@@ -1,0 +1,175 @@
+﻿@{
+    ViewBag.Title = "材料明细";
+}
+
+<h2>材料明细</h2>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#list").jqGrid({
+            url: '/CostTotal/GetRawStockDetail',
+            datatype: 'json',
+            loadonce: false,//
+            mtype: 'GET',
+            colNames: ['Id', '产品版本', '产品图号', '零件图号', '物料代码', '物料描述', '材料版本', '数量', '配套数', '总用量', '材料成本', '单位'],
+            colModel: [
+                { name: 'Id', width: 20, search: false, index: 'Id', editrules: { edithidden: false }, hidedlg: true, hidden: false},
+                { name: 'ProductVersion', width: 30, index: 'ProductVersion', align: 'center',search: false },
+                { name: 'PNumber', width: 50, index: 'PNumber', search: false },
+                { name: 'CNumber', width: 50, index: 'CNumber', searchoptions: { dataInit: numberAuto, sopt: ['eq', 'cn'] } },
+                { name: 'MatNR', width: 40, index: 'MatNR', searchoptions: { dataInit: matnrAuto, sopt: ['eq', 'cn'] } },
+                { name: 'MatDB', width: 70, index: 'MatDB', searchoptions: { sopt: ['eq', 'cn'] } },
+                { name: 'RawStockVersion', width: 25, index: 'RawStockVersion', align: "center", sortable: false, search: false },
+                { name: 'Qty', width: 20, index: 'Qty', align: 'center', sortable: false, search: false },
+                { name: 'CQty', width: 20, index: 'CQty' ,search: false },
+                { name: 'RawStockTotal', width: 30, index: 'RawStockTotal', search: false, unformat: unformatNullColumn },
+                { name: 'RawStockCost', width: 30, index: 'RawStockCost', search: false, unformat: unformatNullColumn },
+                { name: 'Unit', width: 30, index: 'Unit', search: false }
+            ],
+            pager: $('#listPager'),
+            rowNum: 50,
+            rowList: [10, 50, 100],
+            sortname: 'Id',
+            sortorder: "desc",
+            viewrecords: true,
+            caption: '',
+            height: 'auto',//
+            autowidth: true,
+            jsonReader:
+            {
+                root: "rows",  //数据模型
+                page: "page",//数据页码
+                total: "total",//数据总页码
+                records: "records",//数据总记录数
+                repeatitems: false,//如果设为false，则jqGrid在解析json时，会根据name(colmodel 指定的name)来搜索对应的数据元素（即可以json中元素可以不按顺序）
+                cell: "cell",//root 中row 行
+                id: "id"//唯一标识
+            }
+           , footerrow: true,
+            gridComplete: sum
+        });
+
+        //#region 导航栏
+        $("#list").jqGrid('navGrid', '#listPager',
+            {
+                edit: false, add: false, del: false, search: true,
+                searchtext: "查找", addtext: "添加", deltext: "删除", edittext: "编辑", refreshtext: "刷新",
+                beforeRefresh: function () {
+                    Z_ClearFormInput();
+                    $.extend($("#list").jqGrid("getGridParam", "postData"),
+                        { pn: "" ,cn:""});//此处更新输入框
+                }
+            },
+            //#region Edit
+            {},
+            //#endregion
+
+            //#region Add
+            {},
+            //#endregion
+
+            //#region Delete
+            { },
+            //#endregion
+
+            //#region Search
+            {
+                //清除文本框内容；窗体居中。
+                afterShowSearch: function (form) {
+                    $("form :text").each(function () {
+                        $(this).val("");
+                    });
+                    form.closest('div.ui-jqdialog').center();
+                },
+                closeOnEscape: true,
+                closeAfterSearch: true,
+                multipleSearch: true
+            }
+            //#endregion
+        );
+        //#endregion
+
+        // 自定义按钮
+        $("#list").jqGrid("navButtonAdd", "#listPager", {
+            caption: "导出到Excel",
+            buttonicoon: "ui-icon-excel",
+            onClickButton: exportExcel
+            //onClickButton: function () { alert('hello'); }
+        });
+    });//document.ready结束
+
+    //---------自定义函数：筛选、导出到excel---------------------//
+    function searchData() {
+        //study jquery ajax:
+        $.get(
+            "/CostTotal/GetRawStockDetail/",//请求地址
+                function (data, state) {//回调函数
+                    //data：显示从服务器返回的数据；state：显示返回的状态
+                    //alert(data);
+                    //让grid绑定数据
+                    var grid = $("#list");
+                    var pNumber = $.trim($("#pn").val());
+                    var childNum = $.trim($("#cn").val());
+                    grid.jqGrid("setGridParam", { search: false });
+                    if (Z_CheckFormInput() == 0) {
+                        $.extend(grid.jqGrid("getGridParam", "postData"), { pn: "",cn:"" });
+                    } else {
+                        $.extend(grid.jqGrid("getGridParam", "postData"), { pn: pNumber, cn: childNum });
+                    }
+                    grid.trigger("reloadGrid", [{ page: 1, current: true }]);
+                    //return false;
+                    //这里显示返回的状态
+                    //alert(state);
+                }
+        );
+    }
+    function exportExcel() {//不能用ajax的方式！
+        var pNumber = $.trim($("#pn").val());
+        var childNum = $.trim($("#cn").val());
+        alert('导出到excel');
+        //把查询文本框的值赋给隐藏文本框
+        $("#pn1").val(pNumber);
+        $("#cn1").val(childNum);
+        var grid = $("#list");
+        //是否点击了导航栏的搜索按钮
+        isFilterAreUsed = grid.jqGrid('getGridParam', 'search');
+        //筛选条件
+        filters = grid.jqGrid('getGridParam', 'postData').filters;
+        $("#mySearch").val(isFilterAreUsed);
+        $("#myFilters").val(filters);
+        //设置表单
+        $("#myForm").attr("action", "/CostTotal/RawStockDetailExportToExcel");
+        $("#myForm").attr("method", "get");
+        //提交表单
+        $("#myForm").submit();//这里有个提交submit  
+
+    }
+    function sum() {
+        var rawStockTotal = $('#list').getCol('RawStockTotal', false, 'sum');
+        var rawStockCost  = $('#list').getCol('RawStockCost', false, 'sum');
+        $('#list').footerData('set', { PNumber: '合计', RawStockTotal:rawStockTotal.toFixed(5) , RawStockCost:rawStockCost.toFixed(5) });
+    }
+    //单元格中有null的
+    function unformatNullColumn(cellvalue, options) {
+        return (parseFloat(cellvalue) || 0);
+    }
+</script>
+<form id="myForm" name="myForm" >
+    <p>
+    物料代码：<input id="pn" name="pn" type="text" data-autocomplete="@Url.Action("QuickSearchMatNR","RawStock")"/>
+    零件图号：<input id="cn" name="cn" type="text" data-autocomplete="@Url.Action("QuickSearch","BOM")"/>
+    <input type="button" value="查询" onclick="searchData()" />
+    </p>
+    <table id="list"></table>
+    <div id="listPager"></div>
+
+    <!--导出Excel--按钮在jqgrid的导航栏里-->
+    <input type="hidden" id="pn1" name="pn1" />
+    <input type="hidden" id="cn1" name="cn1" />
+    <input type="hidden" id="mySearch" name="mySearch" />
+    <input type="hidden" id="myFilters" name="myFilters" />
+
+    <!--转到明细-->
+    <input type="hidden" id="ProductVersion"   name="ProductVersion" />
+    <input type="hidden" id="PNumber"   name="PNumber" />
+
+</form>

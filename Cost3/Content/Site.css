@@ -1,0 +1,104 @@
+﻿/*页脚保持在最下方*/
+html, body { margin: 0; padding: 0; height: 100%; background-color: #F8F8F8; }
+#container { min-height: 100%; position: relative; width: 75%; margin: auto; /*border: 1px solid #808080;*/ }
+#header { height: 50px; font-size: 2em; /*padding:10px;*/ }
+#body { padding: 10px; padding-bottom: 60px; /*与footer的高度一致*/ }
+h2{font-size:1.2em;border-bottom:1px solid #3399FF;padding-top:5px;}
+#mycontent{margin:0 auto;width:80%;}
+/*#region 搜索区域*/
+#searchForm { padding: 5px; }
+/*#endregion*/
+/*#region jqGrid字体大小*/
+.ui-jqgrid .ui-jqgrid-title { font-size: 1.2em; }
+/*修改grid标题的字体大小*/
+.ui-jqgrid-sortable { font-size: 1.2em; }
+/*修改列名的字体大小*/
+.ui-jqgrid tr.jqgrow td { font-size: 1.2em; }
+/*修改表格内容字体*/
+.ui-jqgrid .ui-jqgrid-pager { font-size: 12px !important; }
+/*翻页导航栏*/
+.ui-jqdialog { font-size: 12px !important; }
+/*弹出form字体大小*/
+/*#endregion*/
+
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error { color: #f00; }
+
+.field-validation-valid { display: none; }
+
+.input-validation-error { border: 1px solid #f00; background-color: #fee; }
+
+.validation-summary-errors { font-weight: bold; color: #f00; }
+
+.validation-summary-valid { display: none; }
+
+/*-----------------导航菜单------------------------*/
+
+   ul#menu ul {
+    display: none;
+    list-style:none;
+    background: #2777A3; 
+    border-radius: 0px; padding: 0;
+    position: absolute; top: 100%;
+    z-index:100;
+}
+ 
+    ul#menu li:hover > ul {
+        display: block;
+    }
+
+   ul#menu {
+   background-color:#2777A3;
+   /*height:36px;*/
+    margin:5px;
+    box-shadow: 0px 0px 9px rgba(0,0,0,0.15);
+    padding: 0 20px;
+    border-radius: 5px;
+    list-style: none;
+    position: relative;
+    /*display: inline-table;*/
+}
+    ul#menu:after {
+        content: ""; clear: both; display: block;
+    }
+ 
+  ul#menu li {
+    float: left;
+    
+}
+ 
+    ul#menu li a {
+        display: block; 
+        padding: 10px 25px;
+        /*color: #757575;*/ 
+        color: white; 
+        text-decoration: none;
+        font-weight:bold;
+    }
+  ul#menu li a:hover{color:#FFA700;}
+
+    ul#menu ul li {
+        float: none;
+        /*border-top: 1px solid #6b727c;*/
+        /*border-bottom: 1px solid #575f6a;*/
+        /*border-left:1px solid #2777A3;
+        border-right:1px solid #2777A3;*/
+        position: relative;
+        /*z-index:100*/
+    }
+        ul#menu ul li a {
+            padding: 10px 25px;
+            font-weight:normal;
+        }
+            ul#menu ul li a:hover {
+                background: #266BA0;
+                
+            }
+ 
+    ul#menu ul ul {
+    position: absolute; left: 100%; top:0;
+}
+
+    hr{border:1px solid #2777A3;margin-top:2em;}

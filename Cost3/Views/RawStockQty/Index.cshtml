@@ -1,0 +1,365 @@
+﻿@{
+    ViewBag.Title = "材料消耗";
+}
+
+@*<h2>材料消耗</h2>*@
+@section scripts{
+    @*<script src="~/Scripts/myjs.js" type="text/javascript"></script>*@
+    <script src="~/Scripts/jquery.form.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/toastr.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="~/Content/toastr.min.css" type="text/css" />
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#list").jqGrid({
+            url: '/RawStockQty/GetData/',
+            editurl: '/RawStockQty/OperateData/',//add,edit,delete
+            datatype: 'json',
+            loadonce: false,//
+            mtype: 'GET',
+            colNames: ['Id', '图号', '材料代码','材料描述', '数量','计量单位', '版本','工厂'],
+            colModel: [
+                {
+                    name: 'Id', width: 10, search: false, index: 'Id',align:'center',
+                    editrules: { edithidden: false }, hidedlg: true, hidden: false
+                },
+                {
+                    name: 'MatNumber', width: 20, index: 'MatNumber',align:'center',
+                    editable: true, editrules: { required: true },editoptions:{dataInit:numberAuto},
+                    searchoptions: {dataInit:numberAuto, sopt: ['eq', 'cn'] }
+                },
+                {
+                    name: 'MatNR', width: 20, index: 'MatNR',align:'center',
+                    editable: true, editrules: { required: true }, editoptions: { dataInit: matnrAuto },
+                    searchoptions: { dataInit: matnrAuto, sopt: ['eq', 'cn'] }
+                },
+                {
+                    name: 'MatDB', width: 50, index: 'MatDB',
+                    searchoptions: { sopt: ['cn'] }
+                },
+                {
+                    name: 'Qty', width: 10, index: 'Qty',align:'center',
+                    editable: true, editrules: { required: true },
+                    searchoptions:{sopt:['eq','gt','lt']}
+                },
+                {
+                    name: 'Unit', width: 8, index: 'Unit',align:'center',
+                    editable: true, editrules: { required: false },
+                    searchoptions: { sopt: ['eq','cn'] }
+                },
+                {
+                    name: 'Version', width: 8, index: 'Version',
+                    editable: true, editrules: { required: true },
+                    searchoptions: { sopt: ['eq','gt','lt'] }
+                },
+                {name:'FactoryCode',width:10,index:'FactoryCode'}
+                
+            ],
+            pager: $('#listPager'),
+            rowNum: 10,
+            rowList: [10, 50, 100],
+            sortname: 'Id',
+            sortorder: "desc",
+            viewrecords: true,
+            //imgpath: '/Content/Themes/Redmond/Images',
+            caption: '材料消耗',
+            height: 'auto',//
+            autowidth: true,
+            jsonReader:
+            {
+                root: "rows",  //数据模型
+                page: "page",//数据页码
+                total: "total",//数据总页码
+                records: "records",//数据总记录数
+                repeatitems: false,//如果设为false，则jqGrid在解析json时，会根据name(colmodel 指定的name)来搜索对应的数据元素（即可以json中元素可以不按顺序）
+                cell: "cell",//root 中row 行
+                id: "id"//唯一标识
+            }
+            , gridComplete: function () {
+                if ('@ViewBag.IsFactory') {
+                    $('#list').hideCol('FactoryCode');
+                    $('#list1').hideCol('FactoryCode');
+                }
+                $("#list1").trigger("reloadGrid");
+            }//刷新待处理表格
+
+        });
+
+        //#region 导航栏
+        $("#list").jqGrid('navGrid', '#listPager',
+            {
+                edit: true, add: true, del: true, search: true,
+                searchtext: "查找", addtext: "添加", deltext: "删除", edittext: "编辑", refreshtext: "刷新",
+                beforeRefresh: function () {
+                    Z_ClearFormInput();
+                    $.extend($("#list").jqGrid("getGridParam", "postData"),
+                        { matnumber: "", matnr: "" });//此处更新输入框
+                }
+            },
+            //#region Edit
+            {
+                ////弹出窗体居中
+                afterShowForm: Z_CenterForm,
+                onclickSubmit: Z_GetId,
+                afterSubmit: Z_AfterSubmit,
+                reloadAfterSubmit: true,//更新完后重新加载grid
+                afterComplete: Z_AfterComplete_Edit,//保持行高亮
+                closeAfterEdit: true,
+                closeOnEscape: true
+            },
+            //#endregion
+
+            //#region Add
+            {
+                afterShowForm: Z_CenterForm,
+                afterSubmit: Z_AfterSubmit,
+                closeOnEscape: true
+                //closeAfterAdd: true,
+            },
+            //#endregion
+
+            //#region Delete
+            {   //获得要删除的Id，post给服务端。
+                onclickSubmit: Z_GetId,
+                afterShowForm: Z_CenterForm,
+                closeOnEscape: true
+            },
+            //#endregion
+
+            //#region Search
+            {
+                //清除文本框内容；窗体居中。
+                afterShowSearch: function (form) {
+                    $("form :text").each(function () {
+                        $(this).val("");
+                    });
+                    form.closest('div.ui-jqdialog').center();
+                },
+                closeOnEscape: true,
+                closeAfterSearch: true,
+                multipleSearch: true
+            }
+            //#endregion
+        );
+        //#endregion
+
+        // 自定义按钮
+        $("#list").jqGrid("navButtonAdd", "#listPager", {
+            caption: "导出到Excel",
+            buttonicoon: "ui-icon-excel",
+            onClickButton: exportExcel
+            //onClickButton: function () { alert('hello'); }
+        });
+
+        // 上传文件表单
+        $("#UploadForm").ajaxForm({
+            iframe: true,
+            dataType: "json",
+            beforeSubmit: function () {
+                if ($('#FileUpload1').val() == '') {
+                    alert('请选择文件!');
+                    return false;
+                }
+            },
+            success: function (result) {
+                $("#UploadForm").resetForm();
+                var DialogVars = $.parseJSON(result);//响应信息
+                if (result.success) {
+                    toastr.success(result.message, 'Success Message')
+                    alert(result.message);
+                    //导入成功后记录数没实时更新 
+                    $("#list").trigger("reloadGrid");
+                }
+                else {
+                    toastr.error(result.message, 'Error Message')
+                    alert(result.message);
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                $("#UploadForm").resetForm();
+                toastr.error('文档上传错误.', 'Error Message')
+            }
+        });
+
+        //button
+        //$("input[type=submit]").button();
+        //dialog
+        $('#UploadForm').dialog({autoOpen:false});
+    });//document.ready结束
+
+    //---------自定义函数：筛选、导出到excel---------------------//
+    function searchData() {
+        //study jquery ajax:
+        $.get(
+            "/RawStockQty/GetData/",//请求地址
+            //{//发送数据 （这里发送的数据虽然可以传递到GetData方法里，但是页面会有2次响应，在第二次响应中这些都是null了。为啥会有2次？）
+            //    pn: $.trim($("#pn").val()),
+            //    cn: $.trim($("#cn").val())
+            //},
+                function (data, state) {//回调函数
+                    //data：显示从服务器返回的数据；state：显示返回的状态
+                    //alert(data);
+                    //让grid绑定数据
+                    var grid = $("#list");
+                    var matnumber = $.trim($("#matnumber").val());
+                    var matnr = $.trim($("#matnr").val());
+                    grid.jqGrid("setGridParam", { search: false });
+                    if (Z_CheckFormInput() == 0) {
+                        $.extend(grid.jqGrid("getGridParam", "postData"), { matnumber: "", matnr: "" });
+                    } else {
+                        $.extend(grid.jqGrid("getGridParam", "postData"), { matnumber: matnumber, matnr: matnr });
+                    }
+                    grid.trigger("reloadGrid", [{ page: 1, current: true }]);
+                    //return false;
+                    //这里显示返回的状态
+                    //alert(state);
+                }
+        );
+    }
+    function exportExcel() {//不能用ajax的方式！
+        var matnumber = $.trim($("#matnumber").val());
+        var matnr = $.trim($("#matnr").val());
+        alert('导出到excel');
+        //把查询文本框的值赋给隐藏文本框
+        $("#matnumber1").val(matnumber);
+        $("#matnr1").val(matnr);
+        var grid = $("#list");
+        //是否点击了导航栏的搜索按钮
+        isFilterAreUsed = grid.jqGrid('getGridParam', 'search');
+        //筛选条件
+        filters = grid.jqGrid('getGridParam', 'postData').filters;
+        $("#mySearch").val(isFilterAreUsed);
+        $("#myFilters").val(filters);
+        //设置表单
+        $("#myForm").attr("action", "/RawStockQty/ExportToExcel");
+        $("#myForm").attr("method", "get");
+        //提交表单
+        $("#myForm").submit();//这里有个提交submit  
+
+        //真不能ajax？我想试试----------下面的确实不行。。。。。。
+        //alert('ready? go!');
+        //var grid = $("#list");
+        //$.ajax({
+        //    url: "/BOM/ExportToExcel", type: "get",
+        //    data: {
+        //        pn1: $.trim($("#pn").val()),
+        //        cn1: $.trim($("#cn").val()),
+        //        mySearch: grid.jqGrid('getGridParam', 'search'),
+        //        myFilters:grid.jqGrid('getGridParam', 'postData').filters
+        //    },
+        //    success: function (responseText) {
+        //        alert('waoeeeee'); 
+        //    }
+        //});
+    }
+
+    //待处理材料
+    $(document).ready(function () {
+        $("#list1").jqGrid({
+            url: '/RawStockQty/GetData1/',//todo
+            datatype: 'json',
+            loadonce: false,//
+            mtype: 'GET',
+            colNames: ['Id', '图号', '版本', '工厂'],
+            colModel: [
+                {
+                    name: 'Id', width: 20, search: false, index: 'Id',
+                    editrules: { edithidden: false }, hidedlg: true, hidden: false
+                },
+                {
+                    name: 'MatNumber', width: 120, index: 'MatNumber',
+                    editable: true, editrules: { required: true }, editoptions: { dataInit: numberAuto },
+                    searchoptions: { dataInit: numberAuto, sopt: ['eq', 'cn'] }
+                },
+
+                {
+                    name: 'Version', width: 20, index: 'Version',
+                    editable: true, editrules: { required: false },
+                    searchoptions: { sopt: ['eq'] }
+                },
+                { name: 'FactoryCode', width: 20, index: 'FactoryCode', editable: false }
+
+            ],
+            pager: $('#listPager1'),
+            rowNum: 10,
+            rowList: [10, 50, 100],
+            sortname: 'Id',
+            sortorder: "desc",
+            viewrecords: true,
+            caption: '待处理材料',
+            height: 'auto',
+            //autowidth: true,
+            width: 600,
+            jsonReader:
+            {
+                root: "rows",  //数据模型
+                page: "page",//数据页码
+                total: "total",//数据总页码
+                records: "records",//数据总记录数
+                repeatitems: false,//如果设为false，则jqGrid在解析json时，会根据name(colmodel 指定的name)来搜索对应的数据元素（即可以json中元素可以不按顺序）
+                cell: "cell",//root 中row 行
+                id: "id"//唯一标识
+            }
+        });
+
+        //#region 导航栏
+        $("#list1").jqGrid('navGrid', '#listPager1',
+            { edit: false, add: false, del: false, search: true, refreshtext: "刷新" },
+             {}, {}, {},
+            {
+                closeOnEscape: true,
+                closeAfterSearch: true,
+                multipleSearch: true
+            }
+        );
+        //#endregion
+
+        // 自定义按钮
+        $("#list1").jqGrid("navButtonAdd", "#listPager1", {
+            caption: "导出",
+            buttonicoon: "ui-icon-excel",
+            onClickButton: exportExcel1
+        });
+    });//documnet end
+    function exportExcel1() {//不能用ajax的方式！
+        var grid = $("#list");
+        //是否点击了导航栏的搜索按钮
+        isFilterAreUsed = grid.jqGrid('getGridParam', 'search');
+        //筛选条件
+        filters = grid.jqGrid('getGridParam', 'postData').filters;
+        //设置表单
+        $("#unRawStock").attr("action", "/RawStockQty/ExportToExcel1");
+        $("#unRawStock").attr("method", "get");
+        //提交表单
+        $("#unRawStock").submit();//这里有个提交submit  
+    }
+</script>
+<!--待处理-->
+<form id="unRawStock">
+    <table id="list1"></table>
+    <div id="listPager1"></div>
+</form>
+<hr />
+
+<form id="myForm" name="myForm" >
+    <p>
+    图号：<input id="matnumber" name="matnumber" type="text" data-autocomplete="@Url.Action("QuickSearchMatNumber","RawStockQty")"/>
+    材料：<input id="matnr" name="matnr" type="text" data-autocomplete="@Url.Action("QuickSearchMatNR","RawStockQty")"/>
+    <input type="button" value="查询" onclick="searchData()" />
+    <a href="#" onclick="$('#UploadForm').dialog('open');return false;">上传文件</a>
+    </p>
+    <table id="list"></table>
+    <div id="listPager"></div>
+
+    <!--导出Excel--按钮在jqgrid的导航栏里-->
+    <input type="hidden" id="matnumber1" name="matnumber1" />
+    <input type="hidden" id="matnr1" name="matnr1" />
+    <input type="hidden" id="mySearch" name="mySearch" />
+    <input type="hidden" id="myFilters" name="myFilters" />
+</form>
+
+<form id="UploadForm" name="UploadForm" action="/RawStockQty/ImportExcel0/" method="post" enctype="multipart/form-data">
+    <input type="file" id="FileUpload1" name="FileUpload1" style="width:250px" />
+    <input id="import" type="submit" value="上传" onclick="$('#UploadForm').dialog('close');" />
+</form>

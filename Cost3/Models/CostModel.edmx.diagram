@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="41785bca46a147ccb4a79f90b8992abf" Name="关系图1" ZoomLevel="100">
+        <EntityTypeShape EntityType="CostModel.AssignFactory" Width="1.5" PointX="7.125" PointY="17" />
+        <EntityTypeShape EntityType="CostModel.BOM" Width="1.5" PointX="1.375" PointY="17.125" />
+        <EntityTypeShape EntityType="CostModel.Factory" Width="1.5" PointX="3.75" PointY="10.5" />
+        <EntityTypeShape EntityType="CostModel.Labour" Width="1.5" PointX="10.695784868065168" PointY="31.297288238675" />
+        <EntityTypeShape EntityType="CostModel.RawStock" Width="1.5" PointX="1.3704603078637554" PointY="10.451036100485844" />
+        <EntityTypeShape EntityType="CostModel.RawStockQty" Width="1.5" PointX="4.75" PointY="17.125" />
+        <EntityTypeShape EntityType="CostModel.VersionManagement" Width="1.5" PointX="2.663453529897823" PointY="24.759915586914829" />
+        <EntityTypeShape EntityType="CostModel.WorkCenter" Width="1.5" PointX="6.125" PointY="10.5" />
+        <EntityTypeShape EntityType="CostModel.CostSumByProductVersion" Width="1.5" PointX="6.0998068443032949" PointY="3.6945963668146153" />
+        <EntityTypeShape EntityType="CostModel.DetailLabour" Width="1.5" PointX="4.9083122671154849" PointY="27.189317462588342" />
+        <EntityTypeShape EntityType="CostModel.DetailRawStock" Width="1.5" PointX="11.906894825355566" PointY="0.95476542457694435" />
+        <EntityTypeShape EntityType="CostModel.UnfinishedLabour" Width="1.5" PointX="1.1661630743956952" PointY="3.5256533192124464" />
+        <EntityTypeShape EntityType="CostModel.UnfinishedRawStock" Width="1.5" PointX="7.875" PointY="10.5" />
+        <AssociationConnector Association="CostModel.FK_Labour_WorkCenter" />
+        <AssociationConnector Association="CostModel.FK_RawStockUsage_RawStock" />
+        <AssociationConnector Association="CostModel.FK_WorkCenter_Factory" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

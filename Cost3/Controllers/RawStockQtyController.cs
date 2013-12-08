@@ -1,0 +1,272 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using MvcJqGrid;
+using Cost.Models;
+using Helper;
+using Cost.ViewModels;
+
+namespace Cost.Controllers
+{
+    [Authorize(Roles="Technic,Factory,Administrator")]
+    public class RawStockQtyController : Controller
+    {
+        private Cost3Entities db = new Cost3Entities();
+        public ActionResult Index()
+        {
+            if (User.IsInRole("Factory"))//隐藏FactoryCode
+                ViewBag.IsFactory = true;
+            return View();
+        }
+
+        public string GetData(GridSettings grid)
+        {
+           //r query = db.RawStockQty as IQueryable<RawStockQty>;
+            var query = (from r in db.RawStockQty
+                         select new RawStockUsageViewModel
+                         {
+                             Id = r.Id,
+                             MatNumber = r.MatNumber,
+                             MatNR = r.MatNR,
+                             MatDB = r.RawStock.MatDB,
+                             Qty = r.Qty,
+                             Unit = r.Unit,
+                             Version = (int)r.Version,
+                             FactoryCode=r.FactoryCode
+                         }) as IQueryable<RawStockUsageViewModel>;
+
+            //工艺所可以查看所有工厂的数据
+            if (User.IsInRole("Factory"))
+            {
+                query = query.Where(u => u.FactoryCode.Equals(User.Identity.Name));
+            }
+
+            if (grid.IsSearch == false)//如果是自定义查询
+            {
+                string matnumber = Request.QueryString["matnumber"];
+                string matnr = Request.QueryString["matnr"];
+                if (!string.IsNullOrEmpty(matnumber)) { query = query.Where(w => w.MatNumber.Contains(matnumber)); }
+                if (!string.IsNullOrEmpty(matnr)) { query = query.Where(w => w.MatNR.Contains(matnr)); }
+            }
+            return GridSearchHelper.GetJsonResult<RawStockUsageViewModel>(grid, query);
+        }
+
+        public ActionResult OperateData(FormCollection form)
+        {
+            string operation = form["oper"];
+            int operId = 0;
+            if (form["myId"] != null)  //Id $ id         
+                operId = Int32.Parse(form["myId"]);
+
+            //add
+            if (operation.Equals("add"))
+            {
+                RawStockQty rawStockQty = new RawStockQty();
+                
+                rawStockQty.MatNumber = form["MatNumber"].Trim();
+                rawStockQty.MatNR = form["MatNR"];
+                rawStockQty.Qty = Convert.ToDecimal(form["Qty"].Trim());
+                rawStockQty.Unit = form["Unit"].Trim();
+                rawStockQty.Version =Convert.ToInt32(form["Version"].Trim());
+                rawStockQty.CreatedOn = DateTime.Now;
+                rawStockQty.FactoryCode = User.Identity.Name;
+
+                try
+                {
+                    db.RawStockQty.Add(rawStockQty);
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "OK" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "sorry" +ex.Message});
+                }
+            }
+            //edit
+            else if (operation.Equals("edit"))
+            {
+                try
+                {
+                    RawStockQty rawStockQty = db.RawStockQty.First(f => f.Id == operId);
+
+                    rawStockQty.MatNumber = form["MatNumber"].Trim();
+                    rawStockQty.MatNR = form["MatNR"];
+                    rawStockQty.Qty = Convert.ToDecimal(form["Qty"].Trim());
+                    rawStockQty.Unit = form["Unit"].Trim();
+                    rawStockQty.Version =Convert.ToInt32(form["Version"].Trim());
+
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "操作成功！" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "操作失败！" + ex.Message });
+                }
+                //delete
+            }
+            else if (operation == "del")
+            {
+                RawStockQty rawStockQty = db.RawStockQty.First(f => f.Id == operId);
+
+                db.RawStockQty.Remove(rawStockQty);
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult ExportToExcel()
+        {
+            GridSettings grid = new GridSettings();
+            grid.SortColumn = "Id";
+            grid.SortOrder = "asc";
+            if (Request.QueryString["mySearch"] == "" || Request.QueryString["mySearch"] == "false")
+            { grid.IsSearch = false; }
+            else
+            {
+                grid.IsSearch = Convert.ToBoolean(Request.QueryString["mySearch"]);
+            }
+
+            string fil = Request.QueryString["myFilters"];
+            grid.Where = MvcJqGrid.Filter.Create(fil, "", "", "");
+
+            var query = db.RawStockQty as IQueryable<RawStockQty>;
+            //工艺所可以查看所有工厂的数据
+            if (User.IsInRole("Factory"))
+            {
+                query = query.Where(u => u.FactoryCode.Equals(User.Identity.Name));
+            }
+            List<RawStockQty> data;
+
+            if (grid.IsSearch == false)//如果是自定义查询
+            {
+                string matnumber = Request.QueryString["matnumber"];
+                string matnr = Request.QueryString["matnr"];
+                if (!string.IsNullOrEmpty(matnumber)) { query = query.Where(w => w.MatNumber.Contains(matnumber)); }
+                if (!string.IsNullOrEmpty(matnr)) { query = query.Where(w => w.MatNR.Contains(matnr)); }
+            }
+            GridSearchHelper.ForExcel<RawStockQty>(grid, query, out data);
+            var returnData = data;
+
+            var myGrid = new System.Web.UI.WebControls.GridView();
+            myGrid.DataSource = from p in returnData
+                                select p;
+            myGrid.DataBind();
+            ImportExportData.ExportToExcel(myGrid, "材料消耗.xls");
+
+            return View();
+        }
+
+        public ActionResult ImportExcel0()
+        {
+            if (Request.Files["FileUpload1"] != null && Request.Files["FileUpload1"].ContentLength > 0)
+            {
+                string fileName = System.IO.Path.GetFileName(Request.Files["FileUpload1"].FileName);
+                //string extension = System.IO.Path.GetExtension(fileName);
+                string serverPath = string.Format("{0}/{1}", Server.MapPath("~/Content/UploadedFolder"), fileName);
+                if (System.IO.File.Exists(serverPath))
+                    System.IO.File.Delete(serverPath);
+
+                Request.Files["FileUpload1"].SaveAs(serverPath);
+
+                try
+                {
+                    ImportExportData.ImportExcel(serverPath, "RawStockQty");
+                    ViewBag.Msg = "good";
+                    System.IO.File.Delete(serverPath);
+                    //为避免IE8出现下载文件提示，需将ContentType设置为"text/html"
+                    JsonResult jt = Json(new { success = true, message = "导入成功！", fileName = fileName });
+                    jt.ContentType = "text/html";
+                    return jt;
+                    //增加以上3行代码。注释以下1行代码
+                    //return Json(new { success = true, message = "导入成功！", fileName = fileName });
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Msg = ex.Message;
+                    //System.IO.File.Delete(serverPath);
+                    JsonResult jt = Json(new { success = false, message = "导入失败" + ex.Message, fileName = fileName });
+                    jt.ContentType = "text/html";
+                    return jt;
+                    //return Json(new { success = false, message = "导入失败" + ex.Message, fileName = fileName });
+                }
+            }
+            return View("Index");
+        }
+
+        //自动完成
+        public ActionResult QuickSearchMatNumber(string term)
+        {
+            var q =
+                (
+                    from p in db.BOM
+                    where p.PNumber.Contains(term)
+                    select p.PNumber
+                )
+                .Union
+                (
+                    from c in db.BOM
+                    where c.CNumber.Contains(term)
+                    select c.CNumber
+                )
+                .Take(10);
+            return Json(q, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult QuickSearchMatNR(string term)
+        {
+            var q =
+                 db.RawStock.Where(p => p.MatNR.Contains(term))
+                .Take(10)
+                .Select(r => new { label = r.MatNR });
+
+            return Json(q, JsonRequestBehavior.AllowGet);
+        }
+
+        //待处理
+        public string GetData1(GridSettings grid)
+        {
+            var query = db.UnfinishedRawStock as IQueryable<UnfinishedRawStock>;
+            //工艺所可以查看所有工厂的数据
+            if (User.IsInRole("Factory"))
+            {
+                query = query.Where(u => u.FactoryCode.Equals(User.Identity.Name));
+            }
+            return GridSearchHelper.GetJsonResult<UnfinishedRawStock>(grid, query);
+        }
+        //待处理-导出excel
+        public ActionResult ExportToExcel1()
+        {
+            GridSettings grid = new GridSettings();
+            grid.SortColumn = "Id";
+            grid.SortOrder = "asc";
+            if (Request.QueryString["mySearch"] == "" || Request.QueryString["mySearch"] == "false")
+            {
+                grid.IsSearch = false;
+            }
+            else
+            {
+                grid.IsSearch = Convert.ToBoolean(Request.QueryString["mySearch"]);
+            }
+
+            string fil = Request.QueryString["myFilters"];
+            grid.Where = MvcJqGrid.Filter.Create(fil, "", "", "");
+
+            var query = db.UnfinishedRawStock as IQueryable<UnfinishedRawStock>;
+            //加入当前用户
+            query = query.Where(u => u.FactoryCode.Equals(User.Identity.Name));
+            List<UnfinishedRawStock> data;
+
+            GridSearchHelper.ForExcel<UnfinishedRawStock>(grid, query, out data);
+            var returnData = data;
+
+            var myGrid = new System.Web.UI.WebControls.GridView();
+            myGrid.DataSource = from p in returnData
+                                select p;
+            myGrid.DataBind();
+            ImportExportData.ExportToExcel(myGrid, "UnRawStock.xls");
+
+            return View();
+        }
+    }
+}

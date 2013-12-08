@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "生产厂";
+}
+
+@*<h2>生产厂</h2>*@
+@section scripts{
+    <script src="~/Scripts/jquery.form.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/toastr.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="~/Content/toastr.min.css" type="text/css" />
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#list").jqGrid({
+            url: '/Factory/GetData/',
+            editurl: '/Factory/OperateData/',//add,edit,delete
+            datatype: 'json',
+            loadonce: false,//
+            mtype: 'GET',
+            colNames: ['Id', '生产厂','描述'],
+            colModel: [
+                {
+                    name: 'Id', width: 10, search: false, index: 'Id',align:'center',
+                    editrules: { edithidden: false }, hidedlg: true, hidden: false
+                },
+                 {
+                     name: 'FactoryCode', width: 10, index: 'FactoryCode',align:'center',
+                     editable: true, editrules: { required: true }, 
+                     searchoptions: {sopt: ['eq', 'cn'] }
+                 },
+                
+                {
+                    name: 'FactoryName', index: 'FactoryName',
+                    editable: true, editrules: { required: true }, 
+                    searchoptions: {sopt: ['eq', 'cn'] }
+                }
+            ],
+            pager: $('#listPager'),
+            rowNum: 10,
+            rowList: [10, 50, 100],
+            sortname: 'Id',
+            sortorder: "desc",
+            viewrecords: true,
+            //imgpath: '/Content/Themes/Redmond/Images',
+            caption: '生产厂',
+            height: 'auto',//
+            autowidth: true,
+            jsonReader:
+            {
+                root: "rows",  //数据模型
+                page: "page",//数据页码
+                total: "total",//数据总页码
+                records: "records",//数据总记录数
+                repeatitems: false,//如果设为false，则jqGrid在解析json时，会根据name(colmodel 指定的name)来搜索对应的数据元素（即可以json中元素可以不按顺序）
+                cell: "cell",//root 中row 行
+                id: "id"//唯一标识
+            }
+        });
+
+        //#region 导航栏
+        $("#list").jqGrid('navGrid', '#listPager',
+            {
+                edit: true, add: true, del: true, search: true,
+                searchtext: "查找", addtext: "添加", deltext: "删除", edittext: "编辑", refreshtext: "刷新",
+                beforeRefresh: function () {
+                    Z_ClearFormInput();
+                    $.extend($("#list").jqGrid("getGridParam", "postData"),
+                        { factoryName: "" });//此处更新输入框
+                }
+            },
+            //#region Edit
+            {
+                ////弹出窗体居中
+                afterShowForm: Z_CenterForm,
+                onclickSubmit: Z_GetId,
+                afterSubmit: Z_AfterSubmit,
+                reloadAfterSubmit: true,//更新完后重新加载grid
+                afterComplete: Z_AfterComplete_Edit,//保持行高亮
+                closeAfterEdit: true,
+                closeOnEscape: true
+            },
+            //#endregion
+
+            //#region Add
+            {
+                afterShowForm: Z_CenterForm,
+                closeOnEscape: true
+                //closeAfterAdd: true,
+            },
+            //#endregion
+
+            //#region Delete
+            {   //获得要删除的Id，post给服务端。
+                onclickSubmit: Z_GetId,
+                afterShowForm: Z_CenterForm,
+                closeOnEscape: true
+            },
+            //#endregion
+
+            //#region Search
+            {
+                //清除文本框内容；窗体居中。
+                afterShowSearch: function (form) {
+                    $("form :text").each(function () {
+                        $(this).val("");
+                    });
+                    form.closest('div.ui-jqdialog').center();
+                },
+                closeOnEscape: true,
+                closeAfterSearch: true,
+                multipleSearch: true
+            }
+            //#endregion
+        );
+        //#endregion
+    });//document.ready结束
+
+</script>
+
+<form id="myForm" name="myForm" >    
+    <table id="list"></table>
+    <div id="listPager"></div>
+</form>

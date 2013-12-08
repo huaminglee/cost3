@@ -1,0 +1,286 @@
+﻿@model IEnumerable<Cost.Models.CostSumByProductVersion>
+
+@{
+    ViewBag.Title = "成本总览";
+}
+
+@*<h2>成本总览</h2>*@
+
+<!--<table>
+    <tr>
+        <th>
+            @*@Html.DisplayNameFor(model => model.ProductVersion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LabourHourCostTotal)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RawStockCostTotal)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CostSum)
+        </th>
+        <th></th>
+    </tr>
+
+@*@foreach (var item in Model) {
+    <tr>
+        <td>
+           @* @Html.DisplayFor(modelItem => item.ProductVersion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LabourHourCostTotal)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RawStockCostTotal)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CostSum)
+        </td>
+        <td>
+            @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ })
+            @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ })*@ 
+           @* @Html.ActionLink("工时明细", "LabourDetail", new {ProductVersion =item.ProductVersion,PNumber=item.PNumber}) |
+            @Html.ActionLink("材料明细","RawStockDetail",new{ProductVersion =item.ProductVersion,PNumber=item.PNumber})
+        </td>
+    </tr>
+}*@
+
+</table>-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#list").jqGrid({
+            url: '/CostTotal/GetData/',          
+            //editurl: '/BOM/OperateData/',//add,edit,delete
+            datatype: 'json',
+            loadonce: false,//
+            mtype: 'Get',
+            colNames: ['Id', '产品版本', '产品图号', '工时成本', '材料成本','总成本','工时明细','材料明细'],
+            colModel: [
+                {
+                    name: 'Id', width: 20, search: false, index: 'Id',
+                    editrules: { edithidden: false }, hidedlg: true, hidden: false
+                },
+                {
+                    name: 'ProductVersion', width: 40, index: 'ProductVersion',
+                    //editable: true, editrules: { required: true },editoptions:{dataInit:numberAuto},
+                    searchoptions: {dataInit:numberAuto, sopt: ['eq', 'cn'] }
+                },
+                {
+                    name: 'PNumber', width: 60, index: 'PNumber',
+                    //editable: true, editrules: { required: true }, editoptions: { dataInit: numberAuto },
+                    searchoptions: {dataInit:numberAuto, sopt: ['eq', 'cn'] }
+                },
+                {
+                    name: 'LabourHourCostTotal', width: 40, index: 'LabourHourCostTotal',search:false
+                    //editable: true, editrules: { required: false },
+                    //searchoptions: { sopt: ['lt'] }
+                },
+                {
+                    name: 'RawStockCostTotal', width: 40, index: 'RawStockCostTotal'
+                    ,search:false
+                },
+                {
+                    name:'CostSum',index:'CostSum',search:false
+                },
+                 { name: 'LabourDetail', index: 'Id', width: 80, align: "center", sortable: false,search:false },
+                 { name: 'RawStockDetail', index: 'Id', width: 80, align: 'center', sortable: false ,search:false}
+            ],
+            pager: $('#listPager'),
+            rowNum: 10,
+            rowList: [10, 50, 100],
+            sortname: 'Id',
+            sortorder: "desc",
+            viewrecords: true,
+            //imgpath: '/Content/Themes/Redmond/Images',
+            caption: '',
+            height: 'auto',//
+            autowidth: true,
+            jsonReader:
+            {
+                root: "rows",  //数据模型
+                page: "page",//数据页码
+                total: "total",//数据总页码
+                records: "records",//数据总记录数
+                repeatitems: false,//如果设为false，则jqGrid在解析json时，会根据name(colmodel 指定的name)来搜索对应的数据元素（即可以json中元素可以不按顺序）
+                cell: "cell",//root 中row 行
+                id: "id"//唯一标识
+            }
+            , gridComplete: function () {  //在此事件中循环为每一行添加修改和删除链接
+                var ids = jQuery("#list").jqGrid('getDataIDs');
+                for (var i = 0; i < ids.length; i++) {
+                    var id = ids[i];
+                    labourDetail = "<a href='#'  onclick='LabourDetail(" + id + ")'>工时明细</a>";  //这里的onclick就是调用了javascript函数 LabourDetail(id)
+                    rawStockDetail = "<a href='#' onclick='RawStockDetail(" + id + ")' >材料明细</a>";
+                    jQuery("#list").jqGrid('setRowData', ids[i], { LabourDetail: labourDetail, RawStockDetail: rawStockDetail });
+                }
+            }
+        });
+
+        //#region 导航栏
+        $("#list").jqGrid('navGrid', '#listPager',
+            {
+                edit: false, add: false, del: false, search: true,
+                searchtext: "查找", addtext: "添加", deltext: "删除", edittext: "编辑", refreshtext: "刷新",
+                beforeRefresh: function () {
+                    Z_ClearFormInput();
+                    $.extend($("#list").jqGrid("getGridParam", "postData"),
+                        { pn: ""});//此处更新输入框
+                }
+            },
+            //#region Edit
+            {
+                ////弹出窗体居中
+                afterShowForm: Z_CenterForm,
+                onclickSubmit: Z_GetId,
+                afterSubmit: Z_AfterSubmit,
+                reloadAfterSubmit: true,//更新完后重新加载grid
+                afterComplete: Z_AfterComplete_Edit,//保持行高亮
+                closeAfterEdit: true,
+                closeOnEscape: true
+            },
+            //#endregion
+
+            //#region Add
+            {
+                afterShowForm: Z_CenterForm,
+                closeOnEscape: true
+                //closeAfterAdd: true,
+            },
+            //#endregion
+
+            //#region Delete
+            {   //获得要删除的Id，post给服务端。
+                onclickSubmit: Z_GetId,
+                afterShowForm: Z_CenterForm,
+                closeOnEscape: true
+            },
+            //#endregion
+
+            //#region Search
+            {
+                //清除文本框内容；窗体居中。
+                afterShowSearch: function (form) {
+                    $("form :text").each(function () {
+                        $(this).val("");
+                    });
+                    form.closest('div.ui-jqdialog').center();
+                },
+                closeOnEscape: true,
+                closeAfterSearch: true,
+                multipleSearch: true
+            }
+            //#endregion
+        );
+        //#endregion
+
+        // 自定义按钮
+        $("#list").jqGrid("navButtonAdd", "#listPager", {
+            caption: "导出到Excel",
+            buttonicoon: "ui-icon-excel",
+            onClickButton: exportExcel
+            //onClickButton: function () { alert('hello'); }
+        });
+    });//document.ready结束
+
+    //明细查看--------------
+    function LabourDetail(id) {  
+        var model = jQuery("#list").jqGrid('getRowData', id);
+        var productVersion = model.ProductVersion;
+        var pNumber = model.PNumber;
+        window.location = '/CostTotal/LabourDetail2?ProductVersion=' + productVersion + "&PNumber=" + pNumber
+        //window.open('/CostTotal/LabourDetail2?ProductVersion=' + productVersion + "&PNumber=" + pNumber);
+        //window.open('/LabourDetail/Index?ProductVersion=' + productVersion + "&PNumber=" + pNumber);
+
+        //$('#ProductVersion').val(productVersion);
+        //$('#PNumber').val(pNumber);
+        ////设置表单
+        //$("#myForm").attr("action", "/LabourDetail/Index");//GetData会显示json
+        //$("#myForm").attr("method", "get");
+        ////提交表单
+        //$("#myForm").submit();//这里有个提交submit  
+    }
+
+    function RawStockDetail(id) { 
+        var model = jQuery("#list").jqGrid('getRowData', id);
+        var productVersion = model.ProductVersion;
+        var pNumber = model.PNumber;
+        window.location = '/CostTotal/RawStockDetail2?ProductVersion=' + productVersion + "&PNumber=" + pNumber
+    }
+    //--------------------------
+
+    //---------自定义函数：筛选、导出到excel---------------------//
+    function searchData() {
+        //study jquery ajax:
+        $.get(
+            "/CostTotal/Index/",//请求地址
+            //{//发送数据 （这里发送的数据虽然可以传递到GetData方法里，但是页面会有2次响应，在第二次响应中这些都是null了。为啥会有2次？）
+            //    pn: $.trim($("#pn").val()),
+            //    cn: $.trim($("#cn").val())
+            //},
+                function (data, state) {//回调函数
+                    //data：显示从服务器返回的数据；state：显示返回的状态
+                    //alert(data);
+                    //让grid绑定数据
+                    var grid = $("#list");
+                    var pNumber = $.trim($("#pn").val());
+                    //var childNum = $.trim($("#cn").val());
+                    grid.jqGrid("setGridParam", { search: false });
+                    if (Z_CheckFormInput() == 0) {
+                        $.extend(grid.jqGrid("getGridParam", "postData"), { pn: "" });
+                    } else {
+                        $.extend(grid.jqGrid("getGridParam", "postData"), { pn: pNumber });
+                    }
+                    grid.trigger("reloadGrid", [{ page: 1, current: true }]);
+                    //return false;
+                    //这里显示返回的状态
+                    //alert(state);
+                }
+        );
+    }
+    function exportExcel() {//不能用ajax的方式！
+        var pNumber = $.trim($("#pn").val());
+        //var childNum = $.trim($("#cn").val());
+        alert('导出到excel');
+        //把查询文本框的值赋给隐藏文本框
+        $("#pn1").val(pNumber);
+        //$("#cn1").val(childNum);
+        var grid = $("#list");
+        //是否点击了导航栏的搜索按钮
+        isFilterAreUsed = grid.jqGrid('getGridParam', 'search');
+        //筛选条件
+        filters = grid.jqGrid('getGridParam', 'postData').filters;
+        $("#mySearch").val(isFilterAreUsed);
+        $("#myFilters").val(filters);
+        //设置表单
+        $("#myForm").attr("action", "/CostTotal/ExportToExcel");
+        $("#myForm").attr("method", "get");
+        //提交表单
+        $("#myForm").submit();//这里有个提交submit  
+
+    }
+</script>
+<form id="myForm" name="myForm" >
+    <p>
+    产品图号：<input id="pn" name="pn" type="text" data-autocomplete="@Url.Action("QuickSearch","BOM")"/>
+    <input type="button" value="查询" onclick="searchData()" />
+    </p>
+    <table id="list"></table>
+    <div id="listPager"></div>
+
+    <!--导出Excel--按钮在jqgrid的导航栏里-->
+    <input type="hidden" id="pn1" name="pn1" />
+    <input type="hidden" id="mySearch" name="mySearch" />
+    <input type="hidden" id="myFilters" name="myFilters" />
+
+    <!--转到明细-->
+    <input type="hidden" id="ProductVersion"   name="ProductVersion" />
+    <input type="hidden" id="PNumber"   name="PNumber" />
+
+</form>

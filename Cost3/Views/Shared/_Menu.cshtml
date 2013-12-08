@@ -1,0 +1,114 @@
+﻿@{    
+    var menus = new[]
+ {
+  new { LinkText="Home", ActionName="Index",ControllerName="Home",Roles="All"  },
+  
+  new{LinkText="基础数据",ActionName="",ControllerName="",Roles="Administrator"  },//Level 1
+  //new { LinkText="原材料", ActionName="Index",ControllerName="RawStock",Roles="Anonymous,Administrator"  },
+  new { LinkText="原材料", ActionName="Index",ControllerName="RawStock",Roles="Administrator"  },
+  new { LinkText="生产厂", ActionName="Index",ControllerName="Factory",Roles="Administrator"  },
+  new { LinkText="工作中心", ActionName="Index",ControllerName="WorkCenter",Roles="Administrator,Finance,Technic"  },
+  
+  new { LinkText="工艺数据",ActionName="",ControllerName="",Roles="Administrator,Technic"  },  
+  new { LinkText="创建BOM", ActionName="Index",ControllerName="BOM",Roles="Administrator,Technic"  },
+  new { LinkText="分配工厂", ActionName="Index",ControllerName="AssignFactory",Roles="Administrator,Technic"  },
+
+  new { LinkText="工厂数据", ActionName="",ControllerName="",Roles="Administrator,Factory,Technic"  },  
+  new { LinkText="工时定额", ActionName="Index",ControllerName="Labour",Roles="Factory,Technic,Administrator"  },
+  new { LinkText="材料定额", ActionName="Index",ControllerName="RawStockQty",Roles="Factory,Technic,Administrator"  },
+
+  new { LinkText="版本管理", ActionName="Index",ControllerName="VersionManagement",Roles="Technic,Administrator"  },
+  
+  new { LinkText="成本", ActionName="Index",ControllerName="CostTotal",Roles="Technic,Administrator"  }
+};
+}
+
+<ul id="menu" class="menuTemplate4 decor4_1">
+
+    @if (HttpContext.Current.User.Identity.IsAuthenticated)
+    {
+
+        String[] roles = Roles.GetRolesForUser();
+
+        var links = from item in menus
+
+                    where item.Roles.Split(new String[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+
+                    .Any(x => roles.Contains(x) || x == "All")
+
+                    select item;
+
+        foreach (var link in links)
+        {
+            if (link.LinkText == "基础数据")
+            { 
+                <li>
+                    <a href="#">基础数据</a>
+
+                    <div class="drop decor4_2">
+                        <div>
+                            @Html.ActionLink("原材料", "Index", "RawStock")<br />
+                            @Html.ActionLink("生产厂", "Index", "Factory")<br />
+                            @Html.ActionLink("工作中心", "Index", "WorkCenter")<br />
+
+                        </div>
+                    </div>
+                </li>                      
+            }
+
+            if (link.LinkText == "工艺数据")
+            { 
+                <li>
+                    <a href="#">工艺数据</a>
+
+                    <div class="drop decor4_2">
+                        <div>
+                            @Html.ActionLink("创建BOM", "Index", "BOM")<br />
+                            @Html.ActionLink("分配工厂", "Index", "AssignFactory")<br />
+                        </div>
+                    </div>
+                </li>                      
+            }
+
+            if (link.LinkText == "工厂数据")
+            { 
+                <li>
+                    <a href="#">工厂数据</a>
+
+                    <div class="drop decor4_2">
+                        <div>
+                            @Html.ActionLink("工时定额", "Index", "Labour")
+                            @Html.ActionLink("材料定额", "Index", "RawStockQty")
+                        </div>
+                    </div>
+                </li>                      
+            }
+
+            
+
+        }@Html.ActionLink("版本管理", "Index", "VersionManagement")
+            @Html.ActionLink("成本", "Index", "CostTotal")
+
+    }
+
+    else
+    {
+
+        var links = from item in menus
+
+                    where item.Roles.Split(new String[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+
+                    .Any(x => new String[] { "All", "Anonymous" }.Contains(x))
+
+                    select item;
+
+        foreach (var link in links)
+        {    
+
+        @: <li> @Html.ActionLink(link.LinkText, link.ActionName, link.ControllerName)</li>        
+
+        }
+
+    }
+
+</ul>

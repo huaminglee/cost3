@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvcSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
+            xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd"
+>
+            
+  <mvcSiteMapNode title="Home" controller="Home" action="Index" >
+      <mvcSiteMapNode title="基础数据" controller="RawStock" action="Index" >
+          <mvcSiteMapNode title="原材料" controller="RawStock" action="Index"/>
+          <mvcSiteMapNode title="生产厂" controller="Factory" action="Index"/>
+          <mvcSiteMapNode title="工作中心" controller="WorkCenter" action="Index" />
+      </mvcSiteMapNode>
+
+      <mvcSiteMapNode title="工艺数据" controller="BOM" action="Index">
+          <mvcSiteMapNode title="创建BOM" controller="BOM" action="Index"/>
+          <mvcSiteMapNode title="分配工厂" controller="AssignFactory" action="Index"/>
+      </mvcSiteMapNode>
+
+      <mvcSiteMapNode title="工厂数据" controller ="Labour" action="Index">
+          <mvcSiteMapNode title="工时定额" controller ="Labour" action="Index"/>
+          <mvcSiteMapNode title="材料定额" controller="RawStockQty" action="Index"/>        
+      </mvcSiteMapNode>
+
+      <mvcSiteMapNode title="版本管理" controller="VersionManagement" action="Index"/>
+      <mvcSiteMapNode title="成本" controller="CostTotal" action="Index"/>
+      
+  </mvcSiteMapNode>
+
+</mvcSiteMap>
