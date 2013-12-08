@@ -5962,12 +5962,27 @@ $.widget( "ui.autocomplete", {
 					break;
 				}
 			})
-			.bind( "keypress.autocomplete", function( event ) {
-				if ( suppressKeyPress ) {
-					suppressKeyPress = false;
-					event.preventDefault();
-				}
-			})
+			//.bind( "keypress.autocomplete", function( event ) {
+			//	if ( suppressKeyPress ) {
+			//		suppressKeyPress = false;
+			//		event.preventDefault();
+			//	}
+			//})
+            //在ff里输入中文不会出现自动提示，将以上代码改为如下：
+            .bind("input.autocomplete", function (event) {
+                if (suppressKeyPress) {
+                    suppressKeyPress = false;
+                    event.preventDefault();
+                }
+                clearTimeout(self.searching);
+                self.searching = setTimeout(function () {
+                    if (self.term != self.element.val()) {
+                        self.selectedItem = null;
+                        self.search(null, event);
+                    }
+                }, self.options.delay);
+            })
+            //FF中文
 			.bind( "focus.autocomplete", function() {
 				if ( self.options.disabled ) {
 					return;
@@ -5977,17 +5992,21 @@ $.widget( "ui.autocomplete", {
 				self.previous = self.element.val();
 			})
 			.bind( "blur.autocomplete", function( event ) {
-				if ( self.options.disabled ) {
-					return;
-				}
+			    if ( self.options.disabled ) {
+			        return;
+			    }
 
-				clearTimeout( self.searching );
-				// clicks on the menu (or a button to trigger a search) will cause a blur event
-				self.closing = setTimeout(function() {
-					self.close( event );
-					self._change( event );
-				}, 150 );
-			});
+			    clearTimeout( self.searching );
+			    // clicks on the menu (or a button to trigger a search) will cause a blur event
+			    self.closing = setTimeout(function() {
+			        self.close( event );
+			        self._change( event );
+			    }, 150 );
+		    });//这里要更改
+			//}).bind('input', function (c) {
+            //    self.search(self.item);
+			//});
+
 		this._initSource();
 		this.menu = $( "<ul></ul>" )
 			.addClass( "ui-autocomplete" )
