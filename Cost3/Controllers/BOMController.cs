@@ -227,5 +227,19 @@ namespace Cost.Controllers
                 .Take(10);
             return Json(q, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult QuickSearchPN(string term)
+        {
+            var q = (from p in db.BOM
+                     where p.PNumber.Contains(term)
+                     select p.PNumber).Distinct().Take(10);
+            return Json(q, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult QuickSearchCN(string term)
+        {
+            var q = (from p in db.BOM
+                     where p.CNumber.Contains(term)
+                     select p.CNumber).Distinct().Take(10);
+            return Json(q, JsonRequestBehavior.AllowGet);
+        }
     }
 }

@@ -25,13 +25,13 @@
                 },
                 {
                     name: 'PNumber', width: 30, index: 'PNumber',align:'center',
-                    editable: true, editrules: { required: true },editoptions:{dataInit:numberAuto},
-                    searchoptions: {dataInit:numberAuto, sopt: ['eq', 'cn'] }
+                    editable: true, editrules: { required: true },editoptions:{dataInit:pnumberAuto},
+                    searchoptions: {dataInit:pnumberAuto, sopt: ['eq', 'cn'] }
                 },
                 {
                     name: 'CNumber', width: 30, index: 'CNumber',align:'center',
-                    editable: true, editrules: { required: true }, editoptions: { dataInit: numberAuto },
-                    searchoptions: {dataInit:numberAuto, sopt: ['eq', 'cn'] }
+                    editable: true, editrules: { required: true }, editoptions: { dataInit: cnumberAuto },
+                    searchoptions: {dataInit:cnumberAuto, sopt: ['eq', 'cn'] }
                 },
                 {
                     name: 'CUnit', width: 15, index: 'CUnit',align:'center',
@@ -242,8 +242,8 @@
 
 <form id="myForm" name="myForm" >
    <p> 
-    产品图号：<input id="pn" name="pn" type="text" data-autocomplete="@Url.Action("QuickSearch","BOM")"/>
-    子项图号：<input id="cn" name="cn" type="text" data-autocomplete="@Url.Action("QuickSearch","BOM")"/>
+    产品图号：<input id="pn" name="pn" type="text" data-autocomplete="@Url.Action("QuickSearchPN","BOM")"/>
+    子项图号：<input id="cn" name="cn" type="text" data-autocomplete="@Url.Action("QuickSearchCN","BOM")"/>
     <input type="button" value="查询" onclick="searchData()" />
     <a href="#" onclick="$('#UploadForm').dialog('open');return false;">上传文件</a>
     </p>

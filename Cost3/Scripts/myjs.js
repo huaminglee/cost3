@@ -213,6 +213,23 @@ function numberAuto(e) {
 }
 //#endregion
 
+//#region 产品（父项）图号-自动完成
+function pnumberAuto(e) {
+    $(e).autocomplete({
+        source: '/BOM/QuickSearchPN',
+        delay:0
+    })
+}
+//#endregion
+//#region 零件（子项）图号-自动完成
+function cnumberAuto(e) {
+    $(e).autocomplete({
+        source: '/BOM/QuickSearchCN',
+        delay: 0
+    })
+}
+//#endregion
+
 //#region 物料代码-自动完成
 function matnrAuto(elem) {
     $(elem).autocomplete({
