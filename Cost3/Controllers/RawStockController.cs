@@ -46,6 +46,7 @@ namespace Cost.Controllers
                 rawStock.BUn = form["BUn"].Trim();
                 rawStock.UnitPrice = Convert.ToDecimal(form["UnitPrice"].Trim());
                 rawStock.CreatedOn = DateTime.Now;
+                rawStock.CreatedBy = User.Identity.Name;
 
                 db.RawStock.Add(rawStock);
                 db.SaveChanges();

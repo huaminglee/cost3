@@ -46,6 +46,7 @@ namespace Cost.Controllers
                 assignFactory.FactoryCode = form["FactoryCode"].Trim();
                 assignFactory.Version =Convert.ToInt32(form["Version"].Trim());
                 assignFactory.CreatedOn = DateTime.Now;
+                assignFactory.CreatedBy = User.Identity.Name;
 
                 db.AssignFactory.Add(assignFactory);
                 db.SaveChanges();

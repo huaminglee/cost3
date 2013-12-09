@@ -51,6 +51,7 @@ namespace Cost.Controllers
                 versionManagement.RawStockVersion =Convert.ToInt32( form["RawStockVersion"].Trim());
                 versionManagement.ProductVersion = form["ProductVersion"].Trim();
                 versionManagement.CreatedOn = DateTime.Now;
+                versionManagement.CreatedBy = User.Identity.Name;
 
                 db.VersionManagement.Add(versionManagement);
                 db.SaveChanges();

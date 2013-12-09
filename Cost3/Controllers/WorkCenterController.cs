@@ -11,7 +11,7 @@ using Cost.ViewModels;
 
 namespace Cost.Controllers
 {
-    //[Authorize(Roles="Finance")]
+    [Authorize(Roles = "Finance,Technic,Administrator")]
     public class WorkCenterController : Controller
     {
         private Cost3Entities db = new Cost3Entities();
@@ -65,6 +65,7 @@ namespace Cost.Controllers
                 //workCenter.FactoryId = Convert.ToInt16(form["FactoryId"]);
                 workCenter.FactoryCode = form["FactoryCode"];
                 workCenter.CreatedOn = DateTime.Now;
+                workCenter.CreatedBy = User.Identity.Name;
 
                 db.WorkCenter.Add(workCenter);
                 db.SaveChanges();

@@ -51,6 +51,7 @@ namespace Cost.Controllers
                 bom.CUnit = form["CUnit"].Trim();
                 bom.CQty = Convert.ToDecimal(form["CQty"].Trim());
                 bom.CreatedOn = DateTime.Now;
+                bom.CreatedBy = User.Identity.Name;
 
                 db.BOM.Add(bom);
                 db.SaveChanges();
