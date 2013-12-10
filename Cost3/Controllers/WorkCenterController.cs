@@ -164,7 +164,15 @@ namespace Cost.Controllers
 
                 try
                 {
-                    ImportExportData.ImportExcel(serverPath, "WorkCenter");
+                    var columnMapping = new List<string>();
+                    columnMapping.Add("工作中心,WorkCenterCode");
+                    columnMapping.Add("工作中心描述,WorkCenterName");
+                    columnMapping.Add("成本中心,CostCenter");
+                    columnMapping.Add("工费率,WorkRate");
+                    columnMapping.Add("生产厂,FactoryCode");
+                    columnMapping.Add("CreatedBy,CreatedBy");
+                    columnMapping.Add("CreatedOn,CreatedOn");
+                    ImportExportData.ImportExcel(serverPath, "WorkCenter",columnMapping);
                     ViewBag.Msg = "good";
                     System.IO.File.Delete(serverPath);
                     //为避免IE8出现下载文件提示，需将ContentType设置为"text/html"

@@ -7,6 +7,7 @@ using MvcJqGrid;
 using Cost.Models;
 using Helper;
 using System.IO;
+using System.Data.SqlClient;
 
 namespace Cost.Controllers
 {
@@ -150,7 +151,17 @@ namespace Cost.Controllers
 
                 try
                 {
-                    ImportExportData.ImportExcel(serverPath, "VersionManagement");
+                    //ImportExportData.ImportExcel(serverPath, "VersionManagement");
+                    var columnMapping = new List<string>();
+                    columnMapping.Add("CreatedBy,CreatedBy");
+                    columnMapping.Add("CreatedOn,CreatedOn");
+                    columnMapping.Add("产品版本,ProductVersion");
+                    columnMapping.Add("产品图号,PNumber");
+                    columnMapping.Add("子项图号,CNumber");
+                    columnMapping.Add("工时版本,LabourVersion");
+                    columnMapping.Add("材料版本,RawStockVersion");
+                    ImportExportData.ImportExcel(serverPath, "VersionManagement", columnMapping);
+
                     ViewBag.Msg = "good";
                     System.IO.File.Delete(serverPath);
                     //为避免IE8出现下载文件提示，需将ContentType设置为"text/html"
@@ -173,37 +184,38 @@ namespace Cost.Controllers
             return View("Index");
         }
 
-        //上传EXCEL文件
-        public ActionResult ImportExcel(HttpPostedFileBase file)
-        {
-            if (file != null)
-            {
-                if (file.ContentLength > 0)
-                {
-                    var fileName = Path.GetFileName(file.FileName);
-                    var filePath = Path.Combine(Server.MapPath("~/Content/UploadedFolder"), fileName);
-                    //如果存在相同名称文件则删除
-                    if (System.IO.File.Exists(filePath))
-                        System.IO.File.Delete(filePath);
-                    file.SaveAs(filePath);
+        ////上传EXCEL文件
+        //public ActionResult ImportExcel(HttpPostedFileBase file)
+        //{
+        //    if (file != null)
+        //    {
+        //        if (file.ContentLength > 0)
+        //        {
+        //            var fileName = Path.GetFileName(file.FileName);
+        //            var filePath = Path.Combine(Server.MapPath("~/Content/UploadedFolder"), fileName);
+        //            //如果存在相同名称文件则删除
+        //            if (System.IO.File.Exists(filePath))
+        //                System.IO.File.Delete(filePath);
+        //            file.SaveAs(filePath);
 
-                    try
-                    {
-                        ImportExportData.ImportExcel(filePath, "VersionManagement");
-                        System.IO.File.Delete(filePath);
-                        return Json(new { success = true, message = "导入成功！" });
-                    }
-                    catch (Exception ex)
-                    {
-                        ViewBag.msg = ex.Message;
-                        System.IO.File.Delete(filePath);
-                        return Json(new { success = false, message = "导入失败" + ex.Message });
-                    }
+        //            try
+        //            {
+        //                ImportExportData.ImportExcel(filePath, "VersionManagement");
 
-                }
-            }
-            return RedirectToAction("Index");
-        }
+        //                System.IO.File.Delete(filePath);
+        //                return Json(new { success = true, message = "导入成功！" });
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                ViewBag.msg = ex.Message;
+        //                System.IO.File.Delete(filePath);
+        //                return Json(new { success = false, message = "导入失败" + ex.Message });
+        //            }
+
+        //        }
+        //    }
+        //    return RedirectToAction("Index");
+        //}
 
         //自动完成
         public ActionResult QuickSearch(string term)

@@ -131,7 +131,14 @@ namespace Cost.Controllers
 
                 try
                 {
-                    ImportExportData.ImportExcel(serverPath, "AssignFactory");
+                    var columnMapping = new List<string>();
+                    columnMapping.Add("CreatedBy,CreatedBy");
+                    columnMapping.Add("CreatedOn,CreatedOn");
+                    columnMapping.Add("图号,MatNumber");
+                    columnMapping.Add("生产厂代码,FactoryCode");
+                    columnMapping.Add("版本,Version");
+
+                    ImportExportData.ImportExcel(serverPath, "AssignFactory",columnMapping);
                     ViewBag.Msg = "good";
                     System.IO.File.Delete(serverPath);
                     //为避免IE8出现下载文件提示，需将ContentType设置为"text/html"

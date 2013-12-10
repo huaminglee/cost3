@@ -164,7 +164,16 @@ namespace Cost.Controllers
 
                 try
                 {
-                    ImportExportData.ImportExcel(serverPath, "Labour");
+                    var columnMapping = new List<string>();
+                    columnMapping.Add("图号,MatNumber");
+                    columnMapping.Add("工作中心代码,WorkCenterCode");
+                    columnMapping.Add("工时,LabourHour");
+                    columnMapping.Add("版本,Version");
+                    columnMapping.Add("备注,Remark");
+                    columnMapping.Add("CreatedBy,CreatedBy");
+                    columnMapping.Add("CreatedOn,CreatedOn");
+                    columnMapping.Add("FactoryCode,FactoryCode");
+                    ImportExportData.ImportExcel(serverPath, "Labour",columnMapping);
                     ViewBag.Msg = "good";
                     System.IO.File.Delete(serverPath);
                     //为避免IE8出现下载文件提示，需将ContentType设置为"text/html"

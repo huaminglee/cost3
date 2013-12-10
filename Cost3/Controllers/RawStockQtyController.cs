@@ -172,7 +172,17 @@ namespace Cost.Controllers
 
                 try
                 {
-                    ImportExportData.ImportExcel(serverPath, "RawStockQty");
+                    var columnMapping = new List<string>();
+                    columnMapping.Add("图号,MatNumber");
+                    columnMapping.Add("材料代码,MatNR"); 
+                    columnMapping.Add("数量,Qty");
+                    columnMapping.Add("单位,Unit");
+                    columnMapping.Add("版本,Version");
+                    columnMapping.Add("CreatedBy,CreatedBy");
+                    columnMapping.Add("CreatedOn,CreatedOn");
+                    columnMapping.Add("FactoryCode,FactoryCode");
+
+                    ImportExportData.ImportExcel(serverPath, "RawStockQty",columnMapping);
                     ViewBag.Msg = "good";
                     System.IO.File.Delete(serverPath);
                     //为避免IE8出现下载文件提示，需将ContentType设置为"text/html"

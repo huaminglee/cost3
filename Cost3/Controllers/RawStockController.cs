@@ -133,7 +133,15 @@ namespace Cost.Controllers
 
                 try
                 {
-                    ImportExportData.ImportExcel(serverPath, "RawStock");
+                    var columnMapping = new List<string>();
+                    columnMapping.Add("CreatedBy,CreatedBy");
+                    columnMapping.Add("CreatedOn,CreatedOn");
+                    columnMapping.Add("物料代码,MatNR");
+                    columnMapping.Add("物料描述,MatDB");
+                    columnMapping.Add("基本单位,BUn");
+                    columnMapping.Add("单价,UnitPrice");
+
+                    ImportExportData.ImportExcel(serverPath, "RawStock",columnMapping);
                     ViewBag.Msg = "good";
                     System.IO.File.Delete(serverPath);
                     //为避免IE8出现下载文件提示，需将ContentType设置为"text/html"
@@ -146,7 +154,7 @@ namespace Cost.Controllers
                 catch (Exception ex)
                 {
                     ViewBag.Msg = ex.Message;
-                    //System.IO.File.Delete(serverPath);
+                    System.IO.File.Delete(serverPath);
                     JsonResult jt = Json(new { success = false, message = "导入失败" + ex.Message, fileName = fileName });
                     jt.ContentType = "text/html";
                     return jt;

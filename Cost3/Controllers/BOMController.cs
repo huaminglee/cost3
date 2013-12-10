@@ -147,7 +147,14 @@ namespace Cost.Controllers
 
                 try
                 {
-                    ImportExportData.ImportExcel(serverPath, "BOMs");
+                    var columnMapping = new List<string>();
+                    columnMapping.Add("产品图号,PNumber");
+                    columnMapping.Add("子项图号,CNumber");
+                    columnMapping.Add("子项单位,CUnit");
+                    columnMapping.Add("子项数量,CQty");
+                    columnMapping.Add("CreatedBy,CreatedBy");
+                    columnMapping.Add("CreatedOn,CreatedOn");
+                    ImportExportData.ImportExcel(serverPath, "BOM",columnMapping);
                     ViewBag.Msg = "good";
                     System.IO.File.Delete(serverPath);
                     //为避免IE8出现下载文件提示，需将ContentType设置为"text/html"
@@ -186,7 +193,7 @@ namespace Cost.Controllers
 
                     try
                     {
-                        ImportExportData.ImportExcel(filePath, "BOMs");
+                        //ImportExportData.ImportExcel(filePath, "BOMs");
                         System.IO.File.Delete(filePath);
                         return Json(new { success = true, message = "导入成功！" });
                     }
