@@ -66,9 +66,16 @@ namespace Cost.Controllers
                 workCenter.FactoryCode = form["FactoryCode"];
                 workCenter.CreatedOn = DateTime.Now;
                 workCenter.CreatedBy = User.Identity.Name;
-
-                db.WorkCenter.Add(workCenter);
-                db.SaveChanges();
+                try
+                {
+                    db.WorkCenter.Add(workCenter);
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "操作成功！" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "操作失败！" + ex.Message });
+                }
             }
             //edit
             else if (operation.Equals("edit"))

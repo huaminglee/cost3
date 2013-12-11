@@ -51,7 +51,7 @@
             sortorder: "desc",
             viewrecords: true,
             //imgpath: '/Content/Themes/Redmond/Images',
-            caption: 'BOM',
+            caption: '创建BOM',
             height: 'auto',//
             autowidth: true,
             jsonReader:
@@ -93,6 +93,7 @@
             //#region Add
             {
                 afterShowForm: Z_CenterForm,
+                afterSubmit: Z_AfterSubmit,
                 closeOnEscape: true
                 //closeAfterAdd: true,
             },

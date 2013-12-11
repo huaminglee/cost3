@@ -47,9 +47,16 @@ namespace Cost.Controllers
                 assignFactory.Version =Convert.ToInt32(form["Version"].Trim());
                 assignFactory.CreatedOn = DateTime.Now;
                 assignFactory.CreatedBy = User.Identity.Name;
-
-                db.AssignFactory.Add(assignFactory);
-                db.SaveChanges();
+                try
+                {
+                    db.AssignFactory.Add(assignFactory);
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "操作成功！" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "操作失败！" + ex.Message });
+                }
             }
             //edit
             else if (operation.Equals("edit"))

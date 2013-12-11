@@ -77,11 +77,11 @@ namespace Cost.Controllers
                 {
                     db.RawStockQty.Add(rawStockQty);
                     db.SaveChanges();
-                    return Json(new { success = true, message = "OK" });
+                    return Json(new { success = true, message = "操作成功！" });
                 }
                 catch (Exception ex)
                 {
-                    return Json(new { success = false, message = "sorry" +ex.Message});
+                    return Json(new { success = false, message = "操作失败！" + ex.Message });
                 }
             }
             //edit

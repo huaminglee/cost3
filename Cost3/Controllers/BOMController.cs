@@ -52,9 +52,17 @@ namespace Cost.Controllers
                 bom.CQty = Convert.ToDecimal(form["CQty"].Trim());
                 bom.CreatedOn = DateTime.Now;
                 bom.CreatedBy = User.Identity.Name;
-
-                db.BOM.Add(bom);
-                db.SaveChanges();
+                try
+                {
+                    db.BOM.Add(bom);
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "操作成功！" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "操作失败！" + ex.Message });                  
+                }
+           
             }
             //edit
             else if (operation.Equals("edit"))

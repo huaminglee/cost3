@@ -72,9 +72,16 @@ namespace Cost.Controllers
                 labour.CreatedOn = DateTime.Now;
                 labour.FactoryCode = User.Identity.Name;
                 labour.CreatedBy = User.Identity.Name;
-
-                db.Labour.Add(labour);
-                db.SaveChanges();
+                try
+                {
+                    db.Labour.Add(labour);
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "操作成功！" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "操作失败！" + ex.Message });
+                }               
             }
             //edit
             else if (operation.Equals("edit"))
