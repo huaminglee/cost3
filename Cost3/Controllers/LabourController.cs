@@ -71,6 +71,7 @@ namespace Cost.Controllers
                 labour.Remark = form["Remark"].Trim();
                 labour.CreatedOn = DateTime.Now;
                 labour.FactoryCode = User.Identity.Name;
+                labour.CreatedBy = User.Identity.Name;
 
                 db.Labour.Add(labour);
                 db.SaveChanges();

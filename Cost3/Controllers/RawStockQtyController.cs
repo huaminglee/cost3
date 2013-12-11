@@ -71,6 +71,7 @@ namespace Cost.Controllers
                 rawStockQty.Version =Convert.ToInt32(form["Version"].Trim());
                 rawStockQty.CreatedOn = DateTime.Now;
                 rawStockQty.FactoryCode = User.Identity.Name;
+                rawStockQty.CreatedBy = User.Identity.Name;
 
                 try
                 {
