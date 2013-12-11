@@ -21,11 +21,11 @@
             colNames: ['Id','产品版本', '产品图号', '子项图号', '工时版本','材料版本'],
             colModel: [
                 {
-                    name: 'Id', width: 10, search: false, index: 'Id',align:'center',
+                    name: 'Id', width: 20, search: false, index: 'Id',align:'center',
                     editrules: { edithidden: false }, hidedlg: true, hidden: false
                 },
                 {
-                    name: 'ProductVersion', width: 30, index: 'ProductVersion',align:'center',
+                    name: 'ProductVersion', width: 25, index: 'ProductVersion',align:'center',
                     editable: true, editrules: { required: true },
                     searchoptions: { sopt: ['eq'] }
                 },
@@ -41,7 +41,7 @@
                     searchoptions: {dataInit:numberAuto, sopt: ['eq', 'cn'] }
                 },
                 {
-                    name: 'LabourVersion', width: 30, index: 'LabourVersion', align: 'center',
+                    name: 'LabourVersion', width: 25, index: 'LabourVersion', align: 'center',
                     editable: true, editrules: { required: true },
                     searchoptions: { sopt: ['eq'] }
                 },
@@ -58,7 +58,7 @@
             sortorder: "desc",
             viewrecords: true,
             //imgpath: '/Content/Themes/Redmond/Images',
-            caption: '版本',
+            caption: '版本管理',
             height: 'auto',//
             autowidth: true,
             //width:800,
@@ -238,6 +238,7 @@
     子项图号：<input id="cn" name="cn" type="text" data-autocomplete="@Url.Action("QuickSearch","VersionManagement")"/>
     <input type="button" value="查询" onclick="searchData()" />
     <a href="#" onclick="$('#UploadForm').dialog('open');return false;">上传文件</a>
+    <a href="~/Content/DownloadModel/版本管理.xlsx">下载模板</a>
     </p>
     <table id="list"></table>
     <div id="listPager"></div>

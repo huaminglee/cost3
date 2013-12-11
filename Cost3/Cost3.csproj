@@ -372,6 +372,13 @@
       <LastGenOutput>CostModel.cs</LastGenOutput>
     </Content>
     <Content Include="Mvc.sitemap" />
+    <Content Include="Content\DownloadModel\原材料.xlsx" />
+    <Content Include="Content\DownloadModel\工作中心.xlsx" />
+    <Content Include="Content\DownloadModel\创建BOM.xlsx" />
+    <Content Include="Content\DownloadModel\分配工厂.xlsx" />
+    <Content Include="Content\DownloadModel\工时定额.xlsx" />
+    <Content Include="Content\DownloadModel\材料定额.xlsx" />
+    <Content Include="Content\DownloadModel\版本管理.xlsx" />
     <None Include="MvcSiteMapSchema.xsd">
       <SubType>Designer</SubType>
     </None>
