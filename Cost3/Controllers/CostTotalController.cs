@@ -61,9 +61,17 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    Id = p.Id,
+                                    产品版本 = p.ProductVersion,
+                                    产品图号 = p.PNumber,
+                                    工时成本 = p.LabourHourCostTotal,
+                                    材料成本 = p.RawStockCostTotal,
+                                    总成本 = p.CostSum
+                                };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "成本总览.xls");
+            ImportExportData.ExportToExcel(myGrid, "成本总览");
 
             return View();
         }
@@ -141,9 +149,23 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    Id = p.Id,
+                                    产品版本 = p.ProductVersion,
+                                    产品图号 = p.PNumber,
+                                    零件图号 = p.CNumber,
+                                    工作中心 = p.WorkCenterCode,
+                                    工作中心描述 = p.WorkCenterName,
+                                    工时版本 = p.LabourVersion,
+                                    工时 = p.LabourHour,
+                                    配套数 = p.CQty,
+                                    总工时 = p.LabourTotal,
+                                    工时成本 = p.LabourCost,
+                                    备注 = p.Remark
+                                };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "工时明细.xls");
+            ImportExportData.ExportToExcel(myGrid, "工时明细");
 
             return View();
         }
@@ -218,9 +240,23 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    Id = p.Id,
+                                    产品版本 = p.ProductVersion,
+                                    产品图号 = p.PNumber,
+                                    零件图号 = p.CNumber,
+                                    材料代码 = p.MatNR,
+                                    材料描述 = p.MatDB,
+                                    材料版本 = p.RawStockVersion,
+                                    数量=p.Qty,
+                                    配套数 = p.CQty,
+                                    总用量 = p.RawStockTotal,
+                                    材料成本 = p.RawStockCost,
+                                    单位 = p.Unit
+                                };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "材料明细.xls");
+            ImportExportData.ExportToExcel(myGrid, "材料明细");
 
             return View();
         }

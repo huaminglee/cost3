@@ -26,7 +26,6 @@ namespace Cost.Models
         }
     
         public DbSet<AssignFactory> AssignFactory { get; set; }
-        public DbSet<BOM> BOM { get; set; }
         public DbSet<Factory> Factory { get; set; }
         public DbSet<Labour> Labour { get; set; }
         public DbSet<RawStock> RawStock { get; set; }
@@ -38,5 +37,6 @@ namespace Cost.Models
         public DbSet<DetailRawStock> DetailRawStock { get; set; }
         public DbSet<UnfinishedLabour> UnfinishedLabour { get; set; }
         public DbSet<UnfinishedRawStock> UnfinishedRawStock { get; set; }
+        public DbSet<BOM> BOM { get; set; }
     }
 }

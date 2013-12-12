@@ -152,9 +152,19 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    Id = p.Id,
+                                    图号 = p.MatNumber,
+                                    材料代码 = p.MatNR,
+                                    材料描述 = p.RawStock.MatDB,
+                                    数量 = p.Qty,
+                                    单位 = p.Unit,
+                                    版本 = p.Version,
+                                    工厂 = p.FactoryCode
+                                };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "材料消耗.xls");
+            ImportExportData.ExportToExcel(myGrid, "材料消耗");
 
             return View();
         }
@@ -273,9 +283,15 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    Id = p.Id,
+                                    图号 = p.MatNumber,
+                                    版本 = p.Version,
+                                    工厂 = p.FactoryCode
+                                };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "UnRawStock.xls");
+            ImportExportData.ExportToExcel(myGrid, "待处理");
 
             return View();
         }

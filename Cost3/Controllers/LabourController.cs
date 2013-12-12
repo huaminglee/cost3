@@ -151,9 +151,19 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    Id = p.Id,
+                                    图号 = p.MatNumber,
+                                    工作中心 = p.WorkCenterCode,
+                                    工作中心描述 = p.WorkCenter.WorkCenterName,//viewmodel传来
+                                    工时 = (decimal)p.LabourHour,
+                                    版本 = (int)p.Version,
+                                    备注 = p.Remark,
+                                    工厂 = p.FactoryCode
+                                };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "工时.xls");
+            ImportExportData.ExportToExcel(myGrid, "工时");
 
             return View();
         }
@@ -267,7 +277,7 @@ namespace Cost.Controllers
             grid.Where = MvcJqGrid.Filter.Create(fil, "", "", "");
 
             var query = db.UnfinishedLabour as IQueryable<UnfinishedLabour>;
-            //加入当前用户
+            //加入当前用户-只导出自己的数据
             query = query.Where(u => u.FactoryCode.Equals(User.Identity.Name));
             List<UnfinishedLabour> data;
 
@@ -276,9 +286,15 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    Id = p.Id,
+                                    图号 = p.MatNumber,
+                                    版本 = p.Version,
+                                    工厂 = p.FactoryCode
+                                };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "UnLabour.xls");
+            ImportExportData.ExportToExcel(myGrid, "待处理");
 
             return View();
         }

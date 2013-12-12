@@ -150,7 +150,15 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    生产厂=p.FactoryCode,
+                                    生产厂描述=p.Factory.FactoryName,
+                                    工作中心=p.WorkCenterCode,
+                                    工作中心描述=p.WorkCenterName,
+                                    成本中心 =p.CostCenter,
+                                    工费率=p.WorkRate
+                                };
             myGrid.DataBind();
             ImportExportData.ExportToExcel(myGrid, "工作中心.xls");
 

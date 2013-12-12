@@ -119,7 +119,13 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    物料代码 = p.MatNR,
+                                    物料描述 = p.MatDB,
+                                    计量单位 = p.BUn,
+                                    单价 = p.UnitPrice
+                                };
             myGrid.DataBind();
             ImportExportData.ExportToExcel(myGrid, "原材料.xls");
 

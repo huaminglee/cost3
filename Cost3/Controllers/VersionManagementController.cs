@@ -137,9 +137,17 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    Id = p.Id,
+                                    产品版本 = p.ProductVersion,
+                                    产品图号 = p.PNumber,
+                                    子项图号 = p.CNumber,
+                                    工时版本 = p.LabourVersion,
+                                    材料版本 = p.RawStockVersion
+                                };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "VersionManagement.xls");
+            ImportExportData.ExportToExcel(myGrid, "版本");
 
             return View();
         }

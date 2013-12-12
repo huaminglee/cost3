@@ -117,7 +117,13 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    Id = p.Id,
+                                    图号 = p.MatNumber,
+                                    生产厂 = p.FactoryCode,
+                                    版本 = p.Version
+                                };
             myGrid.DataBind();
             ImportExportData.ExportToExcel(myGrid, "分配工厂.xls");
 

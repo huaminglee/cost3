@@ -134,7 +134,14 @@ namespace Cost.Controllers
 
             var myGrid = new System.Web.UI.WebControls.GridView();
             myGrid.DataSource = from p in returnData
-                                select p;
+                                select new
+                                {
+                                    序号 = p.Id,
+                                    产品 = p.PNumber,
+                                    子项 = p.CNumber,
+                                    单位 = p.CUnit,
+                                    数量 = p.CQty
+                                };
             myGrid.DataBind();
             ImportExportData.ExportToExcel(myGrid, "BOM数据.xls");
 
@@ -250,6 +257,7 @@ namespace Cost.Controllers
                      select p.PNumber).Distinct().Take(10);
             return Json(q, JsonRequestBehavior.AllowGet);
         }
+      
         public ActionResult QuickSearchCN(string term)
         {
             var q = (from p in db.BOM

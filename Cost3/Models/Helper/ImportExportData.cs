@@ -7,6 +7,8 @@ using System.Web.UI.WebControls;
 using System.Linq;
 using System;
 using System.Web.Routing;
+using System.Text;
+using System.IO;
 
 namespace Helper
 {
@@ -83,12 +85,16 @@ namespace Helper
         ///<param name="fileName">文件名</param>
         public static void ExportToExcel(WebControl ctrl, string fileName)
         {
-            HttpContext.Current.Response.ClearContent();
-            HttpContext.Current.Response.AddHeader("content-disposition", "attachment; filename=" + System.Web.HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8));
-            HttpContext.Current.Response.ContentType = "application/excel";
-            System.IO.StringWriter sw = new System.IO.StringWriter();
+            HttpContext.Current.Response.Clear();
+            HttpContext.Current.Response.ContentType = "application/ms-excel";
+            HttpContext.Current.Response.Charset = "UTF-8";
+            HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
+            //HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment;filename=" + "" + fileName + ".xls");
+            HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment;filename=" + System.Web.HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8) + ".xls");//这样的话，可以设置文件名为中文，且文件名不会乱码。其实就是将汉字转换成UTF8
+
+            StringWriter sw = new System.IO.StringWriter();
             System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
-            ctrl.RenderControl(htw);//传入控件
+            ctrl.RenderControl(htw);
             HttpContext.Current.Response.Write(sw.ToString());
             HttpContext.Current.Response.End();
         }

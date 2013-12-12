@@ -308,7 +308,6 @@
       <Schema Namespace="CostModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
         <EntityContainer Name="Cost3Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AssignFactory" EntityType="CostModel.AssignFactory" />
-          <EntitySet Name="BOM" EntityType="CostModel.BOM" />
           <EntitySet Name="Factory" EntityType="CostModel.Factory" />
           <EntitySet Name="Labour" EntityType="CostModel.Labour" />
           <EntitySet Name="RawStock" EntityType="CostModel.RawStock" />
@@ -332,6 +331,7 @@
             <End Role="Factory" EntitySet="Factory" />
             <End Role="WorkCenter" EntitySet="WorkCenter" />
           </AssociationSet>
+          <EntitySet Name="BOM" EntityType="CostModel.BOM" />
         </EntityContainer>
         <EntityType Name="AssignFactory">
           <Key>
@@ -340,19 +340,6 @@
           <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="MatNumber" MaxLength="15" FixedLength="true" Unicode="false" />
           <Property Type="String" Name="FactoryCode" MaxLength="3" FixedLength="true" Unicode="false" />
-          <Property Type="Int32" Name="Version" />
-          <Property Type="String" Name="CreatedBy" MaxLength="5" FixedLength="true" Unicode="true" />
-          <Property Type="DateTime" Name="CreatedOn" Precision="0" />
-        </EntityType>
-        <EntityType Name="BOM">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="PNumber" Nullable="false" MaxLength="15" FixedLength="true" Unicode="false" />
-          <Property Type="String" Name="CNumber" Nullable="false" MaxLength="15" FixedLength="true" Unicode="false" />
-          <Property Type="String" Name="CUnit" MaxLength="3" FixedLength="true" Unicode="false" />
-          <Property Type="Decimal" Name="CQty" Nullable="false" Precision="18" Scale="3" />
           <Property Type="Int32" Name="Version" />
           <Property Type="String" Name="CreatedBy" MaxLength="5" FixedLength="true" Unicode="true" />
           <Property Type="DateTime" Name="CreatedOn" Precision="0" />
@@ -541,6 +528,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="BOM">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="PNumber" Nullable="false" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Type="String" Name="CNumber" Nullable="false" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Type="String" Name="CUnit" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Type="Decimal" Name="CQty" Nullable="false" Precision="18" Scale="3" />
+          <Property Type="Int32" Name="Version" />
+          <Property Type="String" Name="CreatedBy" MaxLength="5" FixedLength="true" Unicode="true" />
+          <Property Type="DateTime" Name="CreatedOn" Precision="0" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -555,20 +555,6 @@
                 <ScalarProperty Name="Version" ColumnName="Version" />
                 <ScalarProperty Name="FactoryCode" ColumnName="FactoryCode" />
                 <ScalarProperty Name="MatNumber" ColumnName="MatNumber" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="BOM">
-            <EntityTypeMapping TypeName="CostModel.BOM">
-              <MappingFragment StoreEntitySet="BOM">
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Version" ColumnName="Version" />
-                <ScalarProperty Name="CQty" ColumnName="CQty" />
-                <ScalarProperty Name="CUnit" ColumnName="CUnit" />
-                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
-                <ScalarProperty Name="PNumber" ColumnName="PNumber" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -719,6 +705,20 @@
                 <ScalarProperty Name="FactoryCode" ColumnName="FactoryCode" />
                 <ScalarProperty Name="Version" ColumnName="Version" />
                 <ScalarProperty Name="MatNumber" ColumnName="MatNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BOM">
+            <EntityTypeMapping TypeName="CostModel.BOM">
+              <MappingFragment StoreEntitySet="BOM">
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+                <ScalarProperty Name="CQty" ColumnName="CQty" />
+                <ScalarProperty Name="CUnit" ColumnName="CUnit" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="PNumber" ColumnName="PNumber" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
