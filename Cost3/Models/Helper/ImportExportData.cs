@@ -91,6 +91,7 @@ namespace Helper
             HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
             //HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment;filename=" + "" + fileName + ".xls");
             HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment;filename=" + System.Web.HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8) + ".xls");//这样的话，可以设置文件名为中文，且文件名不会乱码。其实就是将汉字转换成UTF8
+            HttpContext.Current.Response.BinaryWrite(System.Text.Encoding.UTF8.GetPreamble());
 
             StringWriter sw = new System.IO.StringWriter();
             System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);

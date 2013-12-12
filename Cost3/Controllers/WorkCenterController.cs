@@ -160,7 +160,7 @@ namespace Cost.Controllers
                                     工费率=p.WorkRate
                                 };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "工作中心.xls");
+            ImportExportData.ExportToExcel(myGrid, "工作中心");
 
             return View();
         }

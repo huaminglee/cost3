@@ -143,7 +143,7 @@ namespace Cost.Controllers
                                     数量 = p.CQty
                                 };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "BOM数据.xls");
+            ImportExportData.ExportToExcel(myGrid, "BOM数据");
 
             return View();
         }

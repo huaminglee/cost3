@@ -125,7 +125,7 @@ namespace Cost.Controllers
                                     版本 = p.Version
                                 };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "分配工厂.xls");
+            ImportExportData.ExportToExcel(myGrid, "分配工厂");
 
             return View();
         }

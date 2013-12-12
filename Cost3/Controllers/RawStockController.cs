@@ -127,7 +127,7 @@ namespace Cost.Controllers
                                     单价 = p.UnitPrice
                                 };
             myGrid.DataBind();
-            ImportExportData.ExportToExcel(myGrid, "原材料.xls");
+            ImportExportData.ExportToExcel(myGrid, "原材料");
 
             return View();
         }
