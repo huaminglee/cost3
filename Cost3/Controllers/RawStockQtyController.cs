@@ -215,35 +215,7 @@ namespace Cost.Controllers
             }
             return View("Index");
         }
-
-        //自动完成
-        public ActionResult QuickSearchMatNumber(string term)
-        {
-            var q =
-                (
-                    from p in db.BOM
-                    where p.PNumber.Contains(term)
-                    select p.PNumber
-                )
-                .Union
-                (
-                    from c in db.BOM
-                    where c.CNumber.Contains(term)
-                    select c.CNumber
-                )
-                .Take(10);
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult QuickSearchMatNR(string term)
-        {
-            var q =
-                 db.RawStock.Where(p => p.MatNR.Contains(term))
-                .Take(10)
-                .Select(r => new { label = r.MatNR });
-
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-
+       
         //待处理
         public string GetData1(GridSettings grid)
         {

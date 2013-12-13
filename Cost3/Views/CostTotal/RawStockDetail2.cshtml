@@ -155,8 +155,8 @@
 </script>
 <form id="myForm" name="myForm" >
     <p>
-    物料代码：<input id="pn" name="pn" type="text" data-autocomplete="@Url.Action("QuickSearchMatNR","RawStock")"/>
-    零件图号：<input id="cn" name="cn" type="text" data-autocomplete="@Url.Action("QuickSearch","BOM")"/>
+    物料代码：<input id="pn" name="pn" type="text" onclick="matnrAuto(this)"/>
+    零件图号：<input id="cn" name="cn" type="text" onclick="cnumberAuto(this)"/>
     <input type="button" value="查询" onclick="searchData()" />
     </p>
     <table id="list"></table>

@@ -227,8 +227,8 @@
 
 <form id="myForm" name="myForm" >
     <p>
-    图号：<input id="matnumber" name="matnumber" type="text" data-autocomplete="@Url.Action("QuickSearchMatNumber","AssignFactory")"/>
-    生产厂：<input id="factorycode" name="factorycode" type="text" title="输入 H 试试" data-autocomplete="@Url.Action("QuickSearchFactory","AssignFactory")"/>
+    图号：<input id="matnumber" name="matnumber" type="text" onclick="numberAuto(this)"/>
+    生产厂：<input id="factorycode" name="factorycode" type="text" title="输入 H 试试" onclick="factoryAuto(this)"/>
     <input type="button" value="查询" onclick="searchData()" />
     <a href="#" onclick="$('#UploadForm').dialog('open');return false;">上传文件</a>
     <a href="~/Content/DownloadModel/分配工厂.xlsx">下载模板</a>

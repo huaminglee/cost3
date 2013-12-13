@@ -198,7 +198,7 @@ function numberAuto_4(e) {
 function numberAuto(e) {
     $(e).autocomplete(
         {
-            source: '/BOM/QuickSearch',
+            source: '/Autocomplete/QuickSearch',
             autoFocus: false,
             delay: 0,
             select: function (event, ui) {
@@ -213,7 +213,7 @@ function numberAuto(e) {
 //#region 产品（父项）图号-自动完成
 function pnumberAuto(e) {
     $(e).autocomplete({
-        source: '/BOM/QuickSearchPN',
+        source: '/Autocomplete/QuickSearchPN',
         delay:0,
         select: function (event, ui) {
             this.value = ui.item.value;
@@ -226,8 +226,13 @@ function pnumberAuto(e) {
 //#region 零件（子项）图号-自动完成
 function cnumberAuto(e) {
     $(e).autocomplete({
-        source: '/BOM/QuickSearchCN',
-        delay: 0
+        source: '/Autocomplete/QuickSearchCN',
+        delay: 0,
+        select: function (event, ui) {
+            this.value = ui.item.value;
+            $(this).trigger('change');
+            return false;
+        }
     })
 }
 //#endregion
@@ -235,7 +240,7 @@ function cnumberAuto(e) {
 //#region 物料代码-自动完成
 function matnrAuto(elem) {
     $(elem).autocomplete({
-        source: '/RawStock/QuickSearchMatNR',
+        source: '/Autocomplete/QuickSearchMatNR',
         delay:0
     })
 }
@@ -244,7 +249,7 @@ function matnrAuto(elem) {
 //#region 物料描述-自动完成
 function matdbAuto(elem) {
     $(elem).autocomplete({
-        source: '/RawStock/QuickSearchMatDB',
+        source: '/Autocomplete/QuickSearchMatDB',
         delay: 0
     })
 }
@@ -253,33 +258,12 @@ function matdbAuto(elem) {
 //#region 生产厂-自动完成
 function factoryAuto(elem) {
     $(elem).autocomplete({
-        //source:function(request,response){
-        //    var term=request.term;
-        //    $.ajax({
-        //        url: '/AssignFactory/QuickSearchFactory',
-        //        dataType:"json",
-        //        data:{"term":term},
-        //        success:function(data){
-        //            response(data);
-        //        }
-        //    })
-        //},
-        //response: function (event, ui) {
-           
-        //    $.each(ui.content, function (index, item) {
-               
-        //        item.label = item.label + "0";
-             
-        //        item.value = item.value + "0";
-        //    })
-        //}
-        
-
-
-        source: '/AssignFactory/QuickSearchFactory', autoFocus: false, delay: 0,
+        source: '/Autocomplete/QuickSearchFactory',
+        delay: 0,
         select: function (event, ui) {
-            //event.preventDefault();//The default behavior of the select event is to update the input with ui.item.value. This code runs after your event handler.
-            $(this).val(ui.item.label)
+            this.value = ui.item.value;
+            $(this).trigger('change');
+            return false;
         }
     })
 }
@@ -288,7 +272,7 @@ function factoryAuto(elem) {
 //#region 工作中心代码-自动完成
 function workCenterAuto(elem) {
     $(elem).autocomplete({
-        source: "/WorkCenter/QuickSearchWorkCenter", delay: 0,
+        source: "/Autocomplete/QuickSearchWorkCenter", delay: 0,
         select: function (event, ui) {
             $(this).val(ui.item.label)
         }
@@ -296,11 +280,21 @@ function workCenterAuto(elem) {
 }
 //#endregion
 
-
 //#region 工作中心描述-自动完成
 function workCenterNameAuto(elem) {
     $(elem).autocomplete({
-        source: "/WorkCenter/QuickSearchWorkCenterName", delay: 0,
+        source: "/Autocomplete/QuickSearchWorkCenterName", delay: 0,
+        select: function (event, ui) {
+            $(this).val(ui.item.label)
+        }
+    })
+}
+//#endregion
+
+//#region 成本中心描述-自动完成
+function costCenterAuto(elem) {
+    $(elem).autocomplete({
+        source: "/Autocomplete/QuickSearchCostCenter", delay: 0,
         select: function (event, ui) {
             $(this).val(ui.item.label)
         }

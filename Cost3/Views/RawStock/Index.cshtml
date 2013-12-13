@@ -25,8 +25,8 @@
                 },
                 {
                     name: 'MatNR', width: 20, index: 'MatNR',
-                    editable: true, editrules: { required: true },
-                    searchoptions: { sopt: ['eq', 'cn'] }
+                    editable: true, editrules: { required: true }, editoptions: { dataInit: matnrAuto },
+                    searchoptions: {dataInit:matnrAuto, sopt: ['eq', 'cn'] }
                 },
                 {
                     name: 'MatDB', width: 50, index: 'MatDB',
@@ -221,8 +221,8 @@
 
 <form id="myForm" name="myForm" >
     <p>
-    物料代码：<input id="matnr" name="matnr" type="text" data-autocomplete="@Url.Action("QuickSearchMatNR","RawStock")"/>
-    物料描述：<input id="matdb" name="matdb" type="text" data-autocomplete="@Url.Action("QuickSearchMatDB","RawStock")"/>
+    物料代码：<input id="matnr" name="matnr" type="text" onclick="matnrAuto(this)"/>
+    物料描述：<input id="matdb" name="matdb" type="text" onclick="matdbAuto(this)"/>
     <input type="button" value="查询" onclick="searchData()" />
     <a href="#" onclick="$('#UploadForm').dialog('open');return false;">上传文件</a>
     <a href="~/Content/DownloadModel/原材料.xlsx">下载模板</a>

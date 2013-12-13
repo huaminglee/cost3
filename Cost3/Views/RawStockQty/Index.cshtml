@@ -344,8 +344,8 @@
 
 <form id="myForm" name="myForm" >
     <p>
-    图号：<input id="matnumber" name="matnumber" type="text" data-autocomplete="@Url.Action("QuickSearchMatNumber","RawStockQty")"/>
-    材料：<input id="matnr" name="matnr" type="text" data-autocomplete="@Url.Action("QuickSearchMatNR","RawStockQty")"/>
+    图号：<input id="matnumber" name="matnumber" type="text" onclick="numberAuto(this)"/>
+    材料：<input id="matnr" name="matnr" type="text" onclick="matnrAuto(this)"/>
     <input type="button" value="查询" onclick="searchData()" />
     <a href="#" onclick="$('#UploadForm').dialog('open');return false;">上传文件</a>
     <a href="~/Content/DownloadModel/材料定额.xlsx">下载模板</a>

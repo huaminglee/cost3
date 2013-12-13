@@ -247,9 +247,9 @@
 
 <form id="myForm" name="myForm" >
     <p>
-    工作中心：<input id="workCenterCode" name="workCenterCode" type="text" data-autocomplete="@Url.Action("QuickSearchWorkCenter","WorkCenter")"/>
-    工作中心描述：<input id="workCenterName" name="workCenterName" type="text" data-autocomplete="@Url.Action("QuickSearchWorkCenterName","WorkCenter")"/>
-    成本中心：<input id="costCenter" name="costCenter" type="text" data-autocomplete="@Url.Action("QuickSearchCostCenter","WorkCenter")"/>
+    工作中心：<input id="workCenterCode" name="workCenterCode" type="text" onclick="workCenterAuto(this)"/>
+    工作中心描述：<input id="workCenterName" name="workCenterName" type="text" onclick="workCenterNameAuto(this)"/>
+    成本中心：<input id="costCenter" name="costCenter" type="text" onclick="costCenterAuto(this)"/>
     <input type="button" value="查询" onclick="searchData()" />
     <a href="#" onclick="$('#UploadForm').dialog('open');return false;">上传文件</a>
     <a href="~/Content/DownloadModel/工作中心.xlsx">下载模板</a>

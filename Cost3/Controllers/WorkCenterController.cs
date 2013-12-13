@@ -208,57 +208,6 @@ namespace Cost.Controllers
                 }
             }
             return View("Index");
-        }
-
-        //自动完成
-        [AllowAnonymous]
-        public ActionResult QuickSearchWorkCenter(string term)
-        {
-            var q = db.WorkCenter.Where(w => w.WorkCenterCode.Contains(term))
-                .Take(10)
-                .Select(w => new
-                {
-                    label = w.WorkCenterCode + " " + w.WorkCenterName,
-                    value = w.WorkCenterCode
-                });
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-
-        [AllowAnonymous]
-        public ActionResult QuickSearchWorkCenterCode(string term)
-        {
-            var q =
-                 db.WorkCenter.Where(p => p.WorkCenterCode.Contains(term))
-                .Take(10)
-                .Select(r => new { label = r.WorkCenterCode });
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-        [AllowAnonymous]
-        public ActionResult QuickSearchWorkCenterName(string term)
-        {
-            var q =
-                 db.WorkCenter.Where(p => p.WorkCenterName.Contains(term))
-                .Take(10)
-                .Select(r => new { label = r.WorkCenterName });
-            //var q = db.WorkCenter.Where(w => w.WorkCenterCode.Contains(term))
-            //  .Take(10)
-            //  .Select(w => new
-            //  {
-            //      value = w.WorkCenterName,
-            //      label = w.WorkCenterCode+" "+w.WorkCenterName
-            //  });
-
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-        [AllowAnonymous]
-        public ActionResult QuickSearchCostCenter(string term)
-        {
-            var q =
-                 db.WorkCenter.Where(p => p.CostCenter.Contains(term))
-                .Take(10)
-                .Select(r => new { label = r.CostCenter });
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-
+        }      
     }
 }

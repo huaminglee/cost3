@@ -64,7 +64,7 @@ namespace Cost.Controllers
                 try
                 {
                     RawStock rawStock = db.RawStock.First(f => f.Id == operId);
-                    rawStock.MatNR = form["MatNR"].Trim();
+                    //rawStock.MatNR = form["MatNR"].Trim(); //主键不能更改
                     rawStock.MatDB = form["MatDB"].Trim();
                     rawStock.BUn = form["BUn"].Trim();
                     rawStock.UnitPrice = Convert.ToDecimal(form["UnitPrice"].Trim());
@@ -175,28 +175,6 @@ namespace Cost.Controllers
                 }
             }
             return View("Index");
-        }
-
-        //自动完成
-        [AllowAnonymous]
-        public ActionResult QuickSearchMatNR(string term)
-        {
-            var q =
-                 db.RawStock.Where(p => p.MatNR.Contains(term))
-                .Take(10)
-                .Select(r => new { label = r.MatNR });
-
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-        [AllowAnonymous]
-        public ActionResult QuickSearchMatDB(string term)
-        {
-            var q =
-                 db.RawStock.Where(p => p.MatDB.Contains(term))
-                .Take(10)
-                .Select(r => new { label = r.MatDB });
-
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
+        }       
     }
 }

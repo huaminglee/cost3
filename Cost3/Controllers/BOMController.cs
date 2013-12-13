@@ -222,48 +222,6 @@ namespace Cost.Controllers
                 }
             }
             return RedirectToAction("Index");
-        }
-
-        //自动完成
-        [AllowAnonymous]
-        public ActionResult QuickSearch(string term)
-        {
-            //var q =
-            //     db.BOM.Where(p => p.PNumber.Contains(term))
-            //    .Concat(db.BOM.Where(c => c.CNumber.Contains(term)))
-            //    .Distinct()
-            //    .Take(10)
-            //    .Select(r => new { label = r.PNumber });
-
-            var q =
-                (
-                    from p in db.BOM
-                    where p.PNumber.Contains(term)
-                    select p.PNumber
-                )
-                .Union
-                (
-                    from c in db.BOM
-                    where c.CNumber.Contains(term)
-                    select c.CNumber
-                )
-                .Take(10);
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult QuickSearchPN(string term)
-        {
-            var q = (from p in db.BOM
-                     where p.PNumber.Contains(term)
-                     select p.PNumber).Distinct().Take(10);
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-      
-        public ActionResult QuickSearchCN(string term)
-        {
-            var q = (from p in db.BOM
-                     where p.CNumber.Contains(term)
-                     select p.CNumber).Distinct().Take(10);
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
+        }              
     }
 }

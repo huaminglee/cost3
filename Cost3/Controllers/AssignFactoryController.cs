@@ -172,31 +172,6 @@ namespace Cost.Controllers
                 }
             }
             return View("Index");
-        }
-
-        //自动完成
-        public ActionResult QuickSearchMatNumber(string term)
-        {
-            var q =
-                 db.AssignFactory.Where(p => p.MatNumber.Contains(term))
-                //.Distinct()
-                .Take(10)
-                .Select(r => new { label = r.MatNumber }).Distinct();
-
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult QuickSearchFactory(string term)
-        {
-            var q =
-                 db.Factory.Where(p => p.FactoryCode.Contains(term))
-                .Take(10)
-                .Select(r => new {
-                    label = r.FactoryCode+" "+r.FactoryName,
-                    value = r.FactoryCode
-                });
-
-            return Json(q, JsonRequestBehavior.AllowGet);
-        }
-
+        }     
     }
 }
