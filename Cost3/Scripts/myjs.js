@@ -201,13 +201,10 @@ function numberAuto(e) {
             source: '/BOM/QuickSearch',
             autoFocus: false,
             delay: 0,
-            focus: function (event, ui) {
-                $(this).val(ui.item.label);
-            },
             select: function (event, ui) {
-                // alert(ui.item.label);
-                //event.preventDefault();
-                $(e).val(ui.item.label);
+                this.value = ui.item.value;
+                $(this).trigger('change');
+                return false;
             }
     });//autocomplete ends
 }
@@ -217,7 +214,12 @@ function numberAuto(e) {
 function pnumberAuto(e) {
     $(e).autocomplete({
         source: '/BOM/QuickSearchPN',
-        delay:0
+        delay:0,
+        select: function (event, ui) {
+            this.value = ui.item.value;
+            $(this).trigger('change');
+            return false;
+        }
     })
 }
 //#endregion
