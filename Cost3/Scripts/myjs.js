@@ -241,7 +241,12 @@ function cnumberAuto(e) {
 function matnrAuto(elem) {
     $(elem).autocomplete({
         source: '/Autocomplete/QuickSearchMatNR',
-        delay:0
+        delay: 0,
+        select: function (event, ui) {
+            this.value = ui.item.value;
+            $(this).trigger('change');
+            return false;
+        }
     })
 }
 //#endregion
@@ -250,7 +255,12 @@ function matnrAuto(elem) {
 function matdbAuto(elem) {
     $(elem).autocomplete({
         source: '/Autocomplete/QuickSearchMatDB',
-        delay: 0
+        delay: 0,
+        select: function (event, ui) {
+            this.value = ui.item.value;
+            $(this).trigger('change');
+            return false;
+        }
     })
 }
 //#endregion
@@ -274,7 +284,9 @@ function workCenterAuto(elem) {
     $(elem).autocomplete({
         source: "/Autocomplete/QuickSearchWorkCenter", delay: 0,
         select: function (event, ui) {
-            $(this).val(ui.item.label)
+            this.value = ui.item.value;
+            $(this).trigger('change');
+            return false;
         }
     })
 }
@@ -285,7 +297,9 @@ function workCenterNameAuto(elem) {
     $(elem).autocomplete({
         source: "/Autocomplete/QuickSearchWorkCenterName", delay: 0,
         select: function (event, ui) {
-            $(this).val(ui.item.label)
+            this.value = ui.item.value;
+            $(this).trigger('change');
+            return false;
         }
     })
 }
@@ -296,7 +310,9 @@ function costCenterAuto(elem) {
     $(elem).autocomplete({
         source: "/Autocomplete/QuickSearchCostCenter", delay: 0,
         select: function (event, ui) {
-            $(this).val(ui.item.label)
+            this.value = ui.item.value;
+            $(this).trigger('change');
+            return false;
         }
     })
 }

@@ -45,8 +45,8 @@
                 },
                 {
                     name: 'CostCenter', width: 20, index: 'CostCenter',align:'center',
-                    editable: true, editrules: { required: false },
-                    searchoptions: { sopt: ['eq','cn'] }
+                    editable: true, editrules: { required: false }, editoptions: { dataInit: costCenterAuto },
+                    searchoptions: { dataInit: costCenterAuto, sopt: ['eq', 'cn'] }
                 },
                 {
                     name: 'WorkRate', index: 'WorkRate',
