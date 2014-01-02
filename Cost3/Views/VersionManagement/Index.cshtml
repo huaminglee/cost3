@@ -26,7 +26,7 @@
                 },
                 {
                     name: 'ProductVersion', width: 25, index: 'ProductVersion',align:'center',
-                    editable: true, editrules: { required: true },
+                    editable: true, editrules: { required: true },editoptions:{defaultValue:'0'},
                     searchoptions: { sopt: ['eq'] }
                 },
 
@@ -42,12 +42,12 @@
                 },
                 {
                     name: 'LabourVersion', width: 25, index: 'LabourVersion', align: 'center',
-                    editable: true, editrules: { required: true },
+                    editable: true, editrules: { required: true },editoptions:{defaultValue:'0'},
                     searchoptions: { sopt: ['eq'] }
                 },
                 {
                     name: 'RawStockVersion', index: 'RawStockVersion',
-                    editable: true, editrules: { required: false },
+                    editable: true, editrules: { required: true },editoptions:{defaultValue:'0'},
                     searchoptions: { sopt: ['eq'] }
                 }
             ],
